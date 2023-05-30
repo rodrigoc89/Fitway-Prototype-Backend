@@ -1,24 +1,23 @@
-const express = require("express")
-const cookieParser = require("cookie-parser")
-const cors = require("cors")
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
-const router = require("./routes/index")
-const db = require("./db/index")
+const router = require("./routes/index");
+const db = require("./db/index");
 
-const app = express()
-const port = 3001
+const app = express();
+const port = 3001;
 
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
 
-app.use(express.json())
-app.use(cookieParser())
-app.use(cors())
+app.use("/api", router);
 
-app.use("/api",router)
+db.sync({ force: false }).then(() => {
+  app.listen(port, () => {
+    console.log(`escuchando en el puerto ${port}`);
+  });
+});
 
-db.sync({force : true}).then(()=>{
-    app.listen(port,()=>{
-        console.log(`escuchando en el puerto ${port}`)
-    })
-})
-
-module.exports = app
+module.exports = app;
