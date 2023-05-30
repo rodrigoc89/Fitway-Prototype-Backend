@@ -22,3 +22,5 @@ SuperSet.belongsTo(Routine);
 // Establecer relación uno a muchos entre SuperSeries y Ejercicios
 SuperSet.hasMany(Exercise);
 Exercise.belongsTo(SuperSet);
+
+module.exports = { User, Routine, Exercise, SuperSet };
