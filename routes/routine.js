@@ -37,6 +37,34 @@ router.post("/:routineId/newExercise", async (req, res) => {
   }
 });
 
+router.post("/:routineId/addExercise", async (req, res) => {
+  const { routineId } = req.params;
+  try {
+    const routine = await Routine.findOne({ where: { id: routineId } });
+
+    if (!routine) {
+      return res.status(404).json({ message: "routine not found" });
+    }
+    const { exerciseId } = req.body;
+
+    const exercise = await Exercise.findOne({ where: { id: exerciseId } });
+
+    if (!exercise) {
+      return res.status(404).json({ message: "exercise not found" });
+    }
+
+    await routine.addExercise(exercise);
+
+    res.status(200).send(exercise);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem adding the Exercise",
+      details: error.message,
+    });
+  }
+});
+
 router.put("/:routineId/updateRoutine", async (req, res) => {
   const { routineId } = req.params;
   try {
@@ -63,6 +91,7 @@ router.delete("/:routineId/deleteRoutine", async (req, res) => {
   const { routineId } = req.params;
   try {
     await Routine.destroy({ where: { id: routineId } });
+
     res.status(200).send({
       message: "the routine has been removed",
     });
