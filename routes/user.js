@@ -1,5 +1,5 @@
 const Router = require("express");
-const User = require("../model/User");
+const { User, Routine } = require("../model");
 
 const { generateToken } = require("../config/token");
 const { validateAuth, validateAdmin } = require("../middleware/auth");
@@ -68,6 +68,36 @@ router.post("/logout", (req, res) => {
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
+  }
+});
+
+router.post("/:userId/newRoutine", validateAuth, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const { name, selectDay, description } = req.body;
+
+    const newRoutine = await Routine.create({
+      name,
+      selectDay,
+      description,
+      UserId: userId,
+    });
+
+    await user.addRoutine(newRoutine);
+
+    res.status(201).send(newRoutine);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem creating Routine",
+      details: error.message,
+    });
   }
 });
 
