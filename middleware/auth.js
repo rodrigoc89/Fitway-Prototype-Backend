@@ -5,8 +5,9 @@ const validateAuth = (req, res, next) => {
   if (!token) return res.status(400).json({ error: "token does not exist" });
 
   const user = validateToken(token);
-  if (!user)
+  if (!user) {
     return res.status(401).json({ error: "the user is not logged in" });
+  }
 
   req.user = user;
   next();
@@ -14,10 +15,11 @@ const validateAuth = (req, res, next) => {
 const validateAdmin = (req, res, next) => {
   const { admin } = req.user.user;
 
-  if (!admin)
+  if (!admin) {
     return res
       .status(401)
       .json({ error: "there are no administrator permissions" });
+  }
 
   next();
 };

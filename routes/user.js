@@ -1,17 +1,100 @@
 const Router = require("express");
 const { User, Routine } = require("../model");
 
-const { generateToken } = require("../config/token");
+const { generateToken, validateToken } = require("../config/token");
 const { validateAuth, validateAdmin } = require("../middleware/auth");
 const { passwordValidator } = require("../middleware/passwordStrong");
 
 const router = Router();
 
-router.post("/register", passwordValidator, async (req, res) => {
-  const { name, lastName, password, email } = req.body;
+// REQUEST USER INFORMATION
+router.get("/profile", async (req, res) => {
   try {
-    const newUser = await User.create({ name, lastName, password, email });
-    res.status(201).send(newUser);
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = validateToken(token);
+
+    const userId = decodedToken.user;
+
+    const user = await User.findByPk(userId.id);
+
+    if (!user.id) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    res.send({
+      id: user.id,
+      fullName: user.fullName,
+      birthday: user.birthday,
+      email: user.email,
+    });
+  } catch (error) {
+    // Manejar errores de token inválido o cualquier otro error
+    res.status(401).send({ message: "Invalid token" });
+  }
+});
+
+router.post("/editProfile/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { weight } = req.body;
+    const user = await User.findOne({ where: { id: id } });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    await user.update({ weight });
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem updating user information",
+      details: error.message,
+    });
+  }
+});
+
+// VALIDATE EMAIL
+router.post("/emailValidate", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email: email } });
+
+    if (user) {
+      return res.status(409).send({
+        error: "Conflict",
+        message: "the email already exists",
+      });
+    }
+
+    res.status(200).send({
+      message: "Email is available for registration.",
+    });
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem checking the email",
+      details: error.message,
+    });
+  }
+});
+
+// REGISTER
+router.post("/register", passwordValidator, async (req, res) => {
+  const { fullName, birthday, password, email } = req.body;
+  try {
+    const newUser = await User.create({ fullName, birthday, password, email });
+
+    const payload = {
+      id: newUser.id,
+      fullName: newUser.fullName,
+      password: newUser.password,
+      email: newUser.email,
+    };
+
+    const token = generateToken(payload);
+
+    res.cookie("token", token);
+    res.status(201).send(token);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
@@ -21,6 +104,7 @@ router.post("/register", passwordValidator, async (req, res) => {
   }
 });
 
+//LOGIN
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -44,14 +128,14 @@ router.post("/login", async (req, res) => {
 
     const payload = {
       id: user.id,
-      name: user.name,
-      lastName: user.lastName,
+      fullName: user.fullName,
       password: user.password,
       email: user.email,
     };
 
     const token = generateToken(payload);
-    res.cookie("token", token).send(payload);
+
+    res.cookie("token", token).send(token);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
@@ -61,6 +145,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//LOGOUT
 router.post("/logout", (req, res) => {
   try {
     res.clearCookie("token");
@@ -71,6 +156,7 @@ router.post("/logout", (req, res) => {
   }
 });
 
+// CREATED NEW ROUTINE
 router.post("/:userId/newRoutine", validateAuth, async (req, res) => {
   const { userId } = req.params;
   try {
