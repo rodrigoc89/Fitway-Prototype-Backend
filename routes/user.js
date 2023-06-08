@@ -1,5 +1,5 @@
 const Router = require("express");
-const { User, Routine } = require("../model");
+const { User, Routine, Exercise, SuperSet } = require("../model");
 
 const { generateToken, validateToken } = require("../config/token");
 const { validateAuth, validateAdmin } = require("../middleware/auth");
@@ -29,8 +29,54 @@ router.get("/profile", async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    // Manejar errores de token inválido o cualquier otro error
     res.status(401).send({ message: "Invalid token" });
+  }
+});
+
+router.get("/routines/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findOne({
+      where: { id: userId },
+      attributes: { exclude: ["password", "salt"] },
+      include: [
+        {
+          model: Routine,
+          include: [
+            { model: Exercise },
+            {
+              model: SuperSet,
+              include: {
+                model: Exercise,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    if (!user.id) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    // const routines = await Routine.findByPk(user.id, {
+    //   include: [
+    //     {
+    //       model: Exercise,
+    //     },
+    //     {
+    //       model: SuperSet,
+    //       include: {
+    //         model: Exercise,
+    //       },
+    //     },
+    //   ],
+    // });
+    // res.status(200).send(user);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem find user routine",
+      details: error.message,
+    });
   }
 });
 
@@ -80,12 +126,19 @@ router.post("/emailValidate", async (req, res) => {
 
 // REGISTER
 router.post("/register", passwordValidator, async (req, res) => {
-  const { fullName, birthday, password, email } = req.body;
+  const { name, lastName, birthday, password, email } = req.body;
   try {
-    const newUser = await User.create({ fullName, birthday, password, email });
+    const newUser = await User.create({
+      name,
+      lastName,
+      birthday,
+      password,
+      email,
+    });
 
     const payload = {
       id: newUser.id,
+      name: newUser.name,
       fullName: newUser.fullName,
       password: newUser.password,
       email: newUser.email,
@@ -153,37 +206,6 @@ router.post("/logout", (req, res) => {
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
-  }
-});
-
-// CREATED NEW ROUTINE
-router.post("/:userId/newRoutine", validateAuth, async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const user = await User.findOne({ where: { id: userId } });
-
-    if (!user) {
-      return res.status(404).json({ message: "user not found" });
-    }
-
-    const { name, selectDay, description } = req.body;
-
-    const newRoutine = await Routine.create({
-      name,
-      selectDay,
-      description,
-      UserId: userId,
-    });
-
-    await user.addRoutine(newRoutine);
-
-    res.status(201).send(newRoutine);
-  } catch (error) {
-    res.status(422).send({
-      error: "Unprocessable Entity",
-      message: "There was a problem creating Routine",
-      details: error.message,
-    });
   }
 });
 

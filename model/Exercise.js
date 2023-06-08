@@ -10,7 +10,7 @@ Exercise.init(
       allowNull: false,
     },
     reps: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.ARRAY(Sequelize.STRING),
       allowNull: false,
     },
     element: {

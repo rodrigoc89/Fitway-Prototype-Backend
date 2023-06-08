@@ -1,7 +1,38 @@
 const Router = require("express");
-const { Routine, Exercise, SuperSet } = require("../model");
+const { Routine, Exercise, SuperSet, User } = require("../model");
 
 const router = Router();
+
+// CREATED NEW ROUTINE
+router.post("/:userId/newRoutine", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const { name, selectDay, description } = req.body;
+
+    const newRoutine = await Routine.create({
+      name,
+      selectDay,
+      description,
+      UserId: userId,
+    });
+
+    await user.addRoutine(newRoutine);
+
+    res.status(201).send(newRoutine);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem creating Routine",
+      details: error.message,
+    });
+  }
+});
 
 router.post("/:routineId/newExercise", async (req, res) => {
   const { routineId } = req.params;

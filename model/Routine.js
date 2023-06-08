@@ -13,9 +13,6 @@ Routine.init(
       type: Sequelize.STRING,
       allowNull: false,
     },
-    description: {
-      type: Sequelize.TEXT,
-    },
   },
   { sequelize: db, modelName: "Routine", timestamps: false }
 );

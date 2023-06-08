@@ -23,4 +23,7 @@ SuperSet.belongsTo(Routine);
 SuperSet.hasMany(Exercise);
 Exercise.belongsTo(SuperSet);
 
+User.hasMany(SuperSet);
+SuperSet.belongsTo(User);
+
 module.exports = { User, Routine, Exercise, SuperSet };

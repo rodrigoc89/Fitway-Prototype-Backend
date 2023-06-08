@@ -5,12 +5,21 @@ const bcrypt = require("bcrypt");
 class User extends Sequelize.Model {}
 User.init(
   {
-    fullName: {
+    name: {
       type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Field cannot be null",
+          msg: "Field name cannot be null",
+        },
+      },
+    },
+    lastName: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Field lastName cannot be null",
         },
       },
     },
@@ -20,7 +29,7 @@ User.init(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Field cannot be null",
+          msg: "Field birthday cannot be null",
         },
       },
     },
@@ -34,7 +43,10 @@ User.init(
       validate: {
         isEmail: {
           args: true,
-          msg: "The field has to be valid email",
+          msg: "The field email has to be valid email",
+        },
+        notNull: {
+          msg: "Field email cannot be null",
         },
       },
     },
