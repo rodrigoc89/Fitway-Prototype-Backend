@@ -70,7 +70,7 @@ router.get("/routines/:userId", async (req, res) => {
     //     },
     //   ],
     // });
-    // res.status(200).send(user);
+    res.status(200).send(user);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
