@@ -5,9 +5,10 @@ const cors = require("cors");
 const router = require("./routes/index");
 const db = require("./db/index");
 require("./model/index");
+require("dotenv").config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(cookieParser());
