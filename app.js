@@ -8,7 +8,7 @@ require("./model/index");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || process.env.PGPORT;
 
 app.use(express.json());
 app.use(cookieParser());
