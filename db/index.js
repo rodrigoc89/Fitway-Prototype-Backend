@@ -6,7 +6,7 @@ const dbConfig = {
   db_user: process.env.DB_USER || process.env.PGUSER,
   db_password: process.env.DB_PASSWORD || process.env.PGPASSWORD,
   db_host: process.env.DB_HOST || process.env.PGHOST,
-  db_dialect: process.env.DB_DIALECT,
+  db_dialect: process.env.DB_DIALECT || "postgres",
   logging: false,
 };
 
