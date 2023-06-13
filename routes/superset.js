@@ -3,47 +3,66 @@ const { User, Routine, SuperSet, Exercise } = require("../model");
 
 const router = Router();
 
-router.post("/:routineId", async (req, res) => {
-  const { routineId } = req.params;
+router.get("/", async (req, res) => {
   try {
-    const newSuperset = await SuperSet.create({ RoutineId: routineId });
-
-    res.status(201).send(newSuperset);
+    const superSets = await SuperSet.findAll();
+    res.status(200).send(superSets);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
-      message: "There was a problem creating Superset",
+      message: "There was a problem finding all superSets",
       details: error.message,
     });
   }
 });
 
-router.post("/newExercise/:supersetId", async (req, res) => {
+router.get("/:supersetId", async (req, res) => {
   const { supersetId } = req.params;
-
   try {
-    const superset = await SuperSet.findOne({ where: { id: supersetId } });
-
-    const { name, reps, element, rest, muscle, series, description } = req.body;
-
-    const newExercise = await Exercise.create({
-      name,
-      reps,
-      element,
-      rest,
-      muscle,
-      series,
-      description,
-      SuperSetId: superset.id,
-    });
-
-    await superset.addExercise(newExercise);
-
-    res.status(201).send(newExercise);
+    const superSet = await SuperSet.findByPk(supersetId);
+    res.status(200).send(superSet);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
-      message: "There was a problem creating Exercise",
+      message: "There was a problem finding the superset",
+      details: error.message,
+    });
+  }
+});
+
+router.post("/", async (req, res) => {
+  try {
+    const { userId, parent, parentId } = req.body;
+
+    const newSuperset = await SuperSet.create({
+      UserId: userId,
+    });
+
+    if (parent == "Routine") {
+      const routine = await Routine.findByPk(parentId);
+      await routine.addSuperSet(newSuperset);
+    }
+
+    res.status(201).send(newSuperset);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem creating superset",
+      details: error.message,
+    });
+  }
+});
+
+router.delete("/deleteSuperset/:supersetId", async (req, res) => {
+  const { supersetId } = req.params;
+  try {
+    await Exercise.destroy({ where: { id: supersetId } });
+
+    res.status(200).send({ message: "the superset has been removed" });
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem deleting the superset",
       details: error.message,
     });
   }
