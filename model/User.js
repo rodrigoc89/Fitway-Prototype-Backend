@@ -33,8 +33,14 @@ User.init(
         },
       },
     },
-    weight: {
-      type: Sequelize.INTEGER,
+    country: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Field birthday cannot be null",
+        },
+      },
     },
     email: {
       type: Sequelize.STRING,
