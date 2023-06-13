@@ -101,8 +101,9 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 - `GET /routines`: Obtiene todas las rutinas.
 - `GET /routines/:id`: Obtiene una rutina específica por su ID.
 - `POST /newRoutine/:userId"`: Crea una nueva rutina.
-- `PUT /routines/:id`: Actualiza una rutina existente por su ID.
-- `DELETE /routines/:id`: Elimina una rutina existente por su ID.
+- `POST /addExercise/:routineId`: Añade un ejercicio a la rutina
+- `PUT //updateRoutine/:id`: Actualiza una rutina existente por su ID.
+- `DELETE /deleteRoutine/:routineId`: Elimina una rutina existente por su ID.
 
 ### Endpoints de ejercicios
 
@@ -110,9 +111,9 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
 - `GET /exercises`: Obtiene todos los ejercicios.
 - `GET /exercises/:id`: Obtiene un ejercicio específico por su ID.
-- `POST /exercises`: Crea un nuevo ejercicio.
-- `PUT /exercises/:id`: Actualiza un ejercicio existente por su ID.
-- `DELETE /exercises/:id`: Elimina un ejercicio existente por su ID.
+- `POST /newExercise`: Crea un nuevo ejercicio.
+- `PUT /editExercise/:exerciseId`: Actualiza un ejercicio existente por su ID.
+- `DELETE /deleteExercise/:exerciseId`: Elimina un ejercicio existente por su ID.
 
 ### Endpoints de superseries
 
@@ -120,7 +121,8 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
 - `GET /supersets`: Obtiene todas las superseries.
 - `GET /supersets/:id`: Obtiene una superserie específica por su ID.
-- `POST /supersets`: Crea una nueva superserie.
+- `POST /supersets/:routineId`: Crea una nueva superserie.
+- `POST /newExercise/:supersetId` Crea un nuevo ejercicio
 - `PUT /supersets/:id`: Actualiza una superserie existente por su ID.
 - `DELETE /supersets/:id`: Elimina una superserie existente por su ID.
 
