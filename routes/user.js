@@ -8,7 +8,43 @@ const { passwordValidator } = require("../middleware/passwordStrong");
 const router = Router();
 
 // REQUEST USER INFORMATION
-router.get("/profile", async (req, res) => {
+
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ["password", "salt"] },
+    });
+
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding all users",
+      details: error.message,
+    });
+  }
+});
+
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findOne({
+      where: { id: userId },
+      attributes: { exclude: ["password", "salt"] },
+    });
+
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the user",
+      details: error.message,
+    });
+  }
+});
+
+router.get("/data/token", async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
 
@@ -62,7 +98,35 @@ router.get("/routines/:userId", async (req, res) => {
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
-      message: "There was a problem find user routine",
+      message: "There was a problem finding the user routines",
+      details: error.message,
+    });
+  }
+});
+
+router.get("/exercises/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const exercises = await Exercise.findByPk(userId);
+    res.status(200).send(exercises);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the user exercises",
+      details: error.message,
+    });
+  }
+});
+
+router.get("/superSets/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const superSets = await SuperSet.findByPk(userId);
+    res.status(200).send(superSets);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the user superset",
       details: error.message,
     });
   }
@@ -81,7 +145,7 @@ router.post("/editProfile/:id", async (req, res) => {
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
-      message: "There was a problem updating user information",
+      message: "There was a problem updating the user information",
       details: error.message,
     });
   }
