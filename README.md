@@ -2,7 +2,7 @@
 
 Fitway Prototype Backend es una aplicación de backend desarrollada para el proyecto Fitway. Proporciona una API para gestionar rutinas de ejercicios, ejercicios y superseries.
 
-##Tabla de contenidos
+## Tabla de contenidos
 
 1. Introducción
 2. Requisitos previos
@@ -16,20 +16,20 @@ Fitway Prototype Backend es una aplicación de backend desarrollada para el proy
 7. Contribuir
 8. Licencia
 
-##Introducción
+## Introducción
 
 Fitway Prototype Backend es una aplicación desarrollada con Node.js y Express.js. Se basa en una base de datos PostgreSQL y utiliza Sequelize como ORM (Object-Relational Mapping).
 
 La aplicación proporciona una API RESTful que permite crear, leer, actualizar y eliminar rutinas, ejercicios y superseries. Está diseñada para ser utilizada por la aplicación frontend de Fitway para gestionar los datos relacionados con el fitness y los entrenamientos.
 
-##Requisitos previos
+## Requisitos previos
 
 Antes de instalar y ejecutar Fitway Prototype Backend, asegúrate de tener los siguientes requisitos previos en tu sistema:
 
 - Node.js (versión X.X.X)
 - PostgreSQL (versión X.X.X)
 
-##Instalación
+## Instalación
 
 Sigue estos pasos para instalar Fitway Prototype Backend en tu sistema:
 
@@ -50,7 +50,7 @@ cd Fitway-Prototype-Backend
 Copy code
 npm install
 
-##Configuración
+## Configuración
 
 Antes de ejecutar la aplicación, asegúrate de configurar los siguientes archivos de configuración:
 
@@ -60,7 +60,7 @@ Antes de ejecutar la aplicación, asegúrate de configurar los siguientes archiv
 
 Asegúrate de completar los valores adecuados en estos archivos de configuración antes de continuar.
 
-##Uso
+## Uso
 
 Para ejecutar Fitway Prototype Backend, sigue estos pasos:
 
@@ -73,11 +73,11 @@ Copy code
 npm start
 La aplicación se iniciará y estará disponible en http://localhost:3000.
 
-##API
+## API
 
 La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
-###Endpoints de rutinas
+### Endpoints de rutinas
 
 - GET /routines: Obtiene todas las rutinas.
 - GET /routines/:id: Obtiene una rutina específica por su ID.
@@ -85,7 +85,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 - PUT /routines/:id: Actualiza una rutina existente por su ID.
 - ELETE /routines/:id: Elimina una rutina existente por su ID.
 
-##Endpoints de ejercicios
+### Endpoints de ejercicios
 
 - GET /exercises: Obtiene todos los ejercicios.
 - GET /exercises/:id: Obtiene un ejercicio específico por su ID.
@@ -93,7 +93,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 - PUT /exercises/:id: Actualiza un ejercicio existente por su ID.
 - DELETE /exercises/:id: Elimina un ejercicio existente por su ID.
 
-##Endpoints de superseries
+### Endpoints de superseries
 
 - GET /supersets: Obtiene todas las superseries.
 - GET /supersets/:id: Obtiene una superserie específica por su ID.
@@ -101,7 +101,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 - PUT /supersets/:id: Actualiza una superserie existente por su ID.
 - DELETE /supersets/:id: Elimina una superserie existente por su ID.
 
-##Contribuir
+## Contribuir
 
 Si deseas contribuir al desarrollo de Fitway Prototype Backend, sigue estos pasos:
 
@@ -134,6 +134,6 @@ git push origin feature/nombre-de-la-funcionalidad
 
 6. Crea una pull request en el repositorio principal Fitway-Prototype-Backend para revisar tus cambios.
 
-##Licencia
+## Licencia
 
 Fitway Prototype Backend se distribuye bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
