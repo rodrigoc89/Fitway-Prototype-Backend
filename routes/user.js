@@ -57,19 +57,7 @@ router.get("/routines/:userId", async (req, res) => {
     if (!user.id) {
       return res.status(404).send({ message: "User not found" });
     }
-    // const routines = await Routine.findByPk(user.id, {
-    //   include: [
-    //     {
-    //       model: Exercise,
-    //     },
-    //     {
-    //       model: SuperSet,
-    //       include: {
-    //         model: Exercise,
-    //       },
-    //     },
-    //   ],
-    // });
+
     res.status(200).send(user);
   } catch (error) {
     res.status(422).send({

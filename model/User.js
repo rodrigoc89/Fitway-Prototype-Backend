@@ -24,7 +24,7 @@ User.init(
       },
     },
 
-    birthday: {
+    birthdate: {
       type: Sequelize.STRING,
       allowNull: false,
       validate: {
@@ -38,7 +38,7 @@ User.init(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Field birthday cannot be null",
+          msg: "Field country cannot be null",
         },
       },
     },
@@ -59,6 +59,11 @@ User.init(
     password: {
       type: Sequelize.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Field password cannot be null",
+        },
+      },
     },
     salt: {
       type: Sequelize.STRING,
