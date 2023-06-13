@@ -29,7 +29,7 @@ User.init(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Field birthday cannot be null",
+          msg: "Field birthdate cannot be null",
         },
       },
     },
