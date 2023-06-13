@@ -36,21 +36,18 @@ Sigue estos pasos para instalar Fitway Prototype Backend en tu sistema:
 1. Clona el repositorio de GitHub:
 
 ```bash
-Copy code
 git clone https://github.com/rodrigoc89/Fitway-Prototype-Backend.git
 ```
 
 2. Navega al directorio del proyecto:
 
 ```bash
-Copy code
 cd Fitway-Prototype-Backend
-
-3. Instala las dependencias:
 ```
 
+3. Instala las dependencias:
+
 ```bash
-Copy code
 npm install
 ```
 
@@ -73,7 +70,6 @@ Para ejecutar Fitway Prototype Backend, sigue estos pasos:
 2. Ejecuta el siguiente comando en el directorio del proyecto:
 
 ```sql
-Copy code
 npm start
 ```
 
@@ -116,21 +112,18 @@ Si deseas contribuir al desarrollo de Fitway Prototype Backend, sigue estos paso
 2. Clona tu fork a tu máquina local:
 
 ```bash
-Copy code
 git clone https://github.com/TU_USUARIO/Fitway-Prototype-Backend.git
 ```
 
 3. Crea una rama local para tus cambios:
 
 ```bash
-Copy code
 git checkout -b feature/nombre-de-la-funcionalidad
 ```
 
 4. Realiza tus modificaciones y haz commit de los cambios:
 
 ```sql
-Copy code
 git add .
 git commit -m "Descripción de los cambios"
 ```
@@ -138,7 +131,6 @@ git commit -m "Descripción de los cambios"
 5. Envía tus cambios a tu fork en GitHub:
 
 ```bash
-Copy code
 git push origin feature/nombre-de-la-funcionalidad
 ```
 

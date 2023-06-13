@@ -119,7 +119,7 @@ router.post("/register", passwordValidator, async (req, res) => {
     const newUser = await User.create({
       name,
       lastName,
-      birthday,
+      birthdate,
       password,
       email,
       country,
@@ -130,6 +130,7 @@ router.post("/register", passwordValidator, async (req, res) => {
       name: newUser.name,
       lastName: newUser.lastName,
       password: newUser.password,
+      birthdate: newUser.birthdate,
       email: newUser.email,
       country: newUser.country,
     };
@@ -173,6 +174,7 @@ router.post("/login", async (req, res) => {
       id: user.id,
       name: user.name,
       lastName: user.lastName,
+      birthdate: user.birthdate,
       password: user.password,
       email: user.email,
       country: user.country,
