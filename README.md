@@ -245,7 +245,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
 #### router : `/routine`
 
-<datails><summary>Ver</summary>
+<details><summary> Ver </summary>
 
 - `GET /routine/`
 
@@ -373,7 +373,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem deleting the Exercise"}
   ```
 
-  <details>
+  </details>
 
 ### Endpoints de superseries
 
@@ -418,7 +418,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem deleting the superset"}
   ```
 
-  <details>
+  </details>
 
 ## Contribuir
 
