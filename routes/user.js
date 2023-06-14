@@ -74,24 +74,23 @@ router.get("/data/token", async (req, res) => {
 router.get("/routines/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findOne({
-      where: { id: userId },
-      attributes: { exclude: ["password", "salt"] },
+    const user = await Routine.findOne({
+      where: { UserId: userId },
       include: [
         {
-          model: Routine,
+          model: Exercise,
+        },
+        {
+          model: SuperSet,
           include: [
-            { model: Exercise },
             {
-              model: SuperSet,
-              include: {
-                model: Exercise,
-              },
+              model: Exercise,
             },
           ],
         },
       ],
     });
+
     if (!user.id) {
       return res.status(404).send({ message: "User not found" });
     }

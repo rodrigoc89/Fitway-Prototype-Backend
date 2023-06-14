@@ -159,12 +159,14 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
-  {
-      "id": 1,
-      "fullName": "",
-      "birthday": "",
-      "email": ""
-  }
+
+  "id": 1,
+    "name": "",
+    "lastName": "",
+    "birthdate": "",
+    "country": "",
+    "email": ""
+
   { message: "User not found" }
   ERROR { message: "Invalid token" }
   ```
