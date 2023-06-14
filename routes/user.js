@@ -74,7 +74,7 @@ router.get("/data/token", async (req, res) => {
 router.get("/routines/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const routines = await Routine.findOne({
+    const routines = await Routine.findAll({
       where: { UserId: userId },
       include: [
         {
@@ -95,7 +95,7 @@ router.get("/routines/:userId", async (req, res) => {
       return res.status(404).send({ message: "routines not found" });
     }
 
-    res.status(200).send(user);
+    res.status(200).send(routines);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
@@ -108,7 +108,7 @@ router.get("/routines/:userId", async (req, res) => {
 router.get("/exercises/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const exercises = await Exercise.findOne({ where: { UserId: userId } });
+    const exercises = await Exercise.findAll({ where: { UserId: userId } });
     if (!exercises) {
       return res.status(404).send({ message: "exercises not found" });
     }
@@ -125,7 +125,14 @@ router.get("/exercises/:userId", async (req, res) => {
 router.get("/superSets/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const superSets = await SuperSet.findOne({ where: { UserId: userId } });
+    const superSets = await SuperSet.findAll({
+      where: { UserId: userId },
+      include: [
+        {
+          model: Exercise,
+        },
+      ],
+    });
     if (!superSets) {
       return res.status(404).send({ message: "superSets not found" });
     }
