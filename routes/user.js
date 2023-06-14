@@ -60,8 +60,10 @@ router.get("/data/token", async (req, res) => {
 
     res.send({
       id: user.id,
-      fullName: user.fullName,
-      birthday: user.birthday,
+      name: user.name,
+      lastName: user.lastName,
+      birthdate: user.birthdate,
+      country: user.country,
       email: user.email,
     });
   } catch (error) {
@@ -132,7 +134,7 @@ router.get("/superSets/:userId", async (req, res) => {
   }
 });
 
-router.post("/editProfile/:id", async (req, res) => {
+router.put("/editProfile/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const { weight } = req.body;
