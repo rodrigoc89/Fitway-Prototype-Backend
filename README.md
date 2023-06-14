@@ -82,7 +82,9 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
 #### api base path : `/api`
 
-<details><summary>Endpoints de Usuarios</summary>
+### Endpoints de Usuarios
+
+<details><summary> Ver </summary>
 
 #### router : `/users`
 
@@ -237,9 +239,11 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem checking the email"}
   ```
 
-  </details>
+</details>
 
 ### Endpoints de rutinas
+
+<datails><summary>Ver</summary>
 
 #### router : `/routine`
 
@@ -294,7 +298,11 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem deleting the routine"}
   ```
 
+</details>
+
 ### Endpoints de ejercicios
+
+<details><summary> Ver </summary>
 
 #### router : `/exercise`
 
@@ -365,7 +373,11 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem deleting the Exercise"}
   ```
 
+<details>
+
 ### Endpoints de superseries
+
+<details><summary> Ver </summary>
 
 #### router : `/superset`
 
@@ -405,6 +417,8 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   { message: "the superset has been removed" }
   ERROR {message: "There was a problem deleting the superset"}
   ```
+
+<details>
 
 ## Contribuir
 
