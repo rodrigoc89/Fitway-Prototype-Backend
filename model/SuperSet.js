@@ -3,6 +3,16 @@ const db = require("../db/index");
 
 class SuperSet extends Sequelize.Model {}
 
-SuperSet.init({}, { sequelize: db, modelName: "SuperSet", timestamps: false });
+SuperSet.init(
+  {
+    order: {
+      type: Sequelize.INTEGER,
+    },
+    rest: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  { sequelize: db, modelName: "SuperSet", timestamps: false }
+);
 
 module.exports = SuperSet;

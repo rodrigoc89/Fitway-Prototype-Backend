@@ -45,6 +45,7 @@ router.post("/newExercise", async (req, res) => {
       parent,
       parentId,
       userId,
+      order,
     } = req.body;
 
     const exerciseData = {
@@ -55,6 +56,7 @@ router.post("/newExercise", async (req, res) => {
       muscle,
       series,
       description,
+      order,
     };
     const exercise = await Exercise.create({
       ...exerciseData,

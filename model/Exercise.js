@@ -32,6 +32,9 @@ Exercise.init(
     description: {
       type: Sequelize.TEXT,
     },
+    order: {
+      type: Sequelize.INTEGER,
+    },
   },
   { sequelize: db, modelName: "Exercise", timestamps: false }
 );

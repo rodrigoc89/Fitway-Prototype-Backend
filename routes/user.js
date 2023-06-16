@@ -76,15 +76,19 @@ router.get("/routines/:userId", async (req, res) => {
   try {
     const routines = await Routine.findAll({
       where: { UserId: userId },
+      attributes: ["name", "selectDay"],
       include: [
         {
           model: Exercise,
+          order: [["order", "ASC"]],
         },
         {
           model: SuperSet,
+          order: [["order", "ASC"]],
           include: [
             {
               model: Exercise,
+              order: [["order", "ASC"]],
             },
           ],
         },
