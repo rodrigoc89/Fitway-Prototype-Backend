@@ -337,6 +337,19 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem finding the routine"}
   ```
 
+- `GET /dataRoutine/:routineId`:routineId
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "selectDay": ""
+    "UserId":
+  }
+  ERROR {message: "There was a problem finding the routine"}
+  ```
+
 - `POST /routine/newRoutine/:userId`
 
   ```
