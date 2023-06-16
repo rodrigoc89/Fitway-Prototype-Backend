@@ -19,12 +19,40 @@ router.get("/", async (req, res) => {
 router.get("/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
-    const routine = await Routine.findOne({ where: { id: routineId } });
+    const routine = await Routine.findByPk({ where: { id: routineId } });
     res.status(200).send(routine);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
       message: "There was a problem finding the routine",
+      details: error.message,
+    });
+  }
+});
+
+router.get("/dataRoutine/:routineId", async (req, res) => {
+  const { routineId } = req.params;
+  try {
+    const dataRoutine = await Routine.findByPk(routineId, {
+      attributes: { exclude: ["id", "name", "selectDay", "UserId"] },
+      include: [
+        {
+          model: Exercise,
+        },
+        {
+          model: SuperSet,
+
+          include: {
+            model: Exercise,
+          },
+        },
+      ],
+    });
+    res.status(200).send(dataRoutine);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the data of routine",
       details: error.message,
     });
   }
@@ -40,12 +68,11 @@ router.post("/newRoutine/:userId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const { name, selectDay, description } = req.body;
+    const { name, selectDay } = req.body;
 
     const newRoutine = await Routine.create({
       name,
       selectDay,
-      description,
       UserId: userId,
     });
 
@@ -64,15 +91,15 @@ router.post("/newRoutine/:userId", async (req, res) => {
 router.put("/updateRoutine/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
-    const routine = await Routine.findOne({ where: { id: routineId } });
+    const routine = await Routine.findByPk(routineId);
 
     if (!routine) {
       return res.status(404).json({ message: "routine not found" });
     }
 
-    const { name, selectDay, description } = req.body;
+    const { name, selectDay } = req.body;
 
-    await routine.update({ name, selectDay, description });
+    await routine.update({ name, selectDay });
     res.status(200).send(routine);
   } catch (error) {
     res.status(422).send({
