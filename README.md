@@ -312,7 +312,45 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
-  NO SE
+  [
+    {
+        "id": 1,
+        "name": "test",
+        "reps": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        "element": "test",
+        "rest": 5,
+        "muscle": "test",
+        "series": 4,
+        "description": "test",
+        "order": 5,
+        "UserId": 1
+    },
+    {
+        "id": 2,
+        "name": "test",
+        "reps": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        "element": "test",
+        "rest": 5,
+        "muscle": "test",
+        "series": 4,
+        "description": "test",
+        "order": 4,
+        "UserId": 2
+    },
+
+  ]
   ERROR {message: "There was a problem finding all exercises"}
   ```
 
@@ -320,7 +358,24 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
-  NO SE
+  {
+    "id": 1,
+    "name": "test",
+    "reps": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+    ],
+    "element": "test",
+    "rest": 5,
+    "muscle": "test",
+    "series": 4,
+    "description": "test",
+    "order": 5,
+    "UserId": 1
+  }
   ERROR {"There was a problem finding the exercise"}
   ```
 
@@ -329,13 +384,30 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ```
   Parámetros de solicitud:
   {
-    name, reps, element, rest, muscle, series, description, parent, parentId,  userId,
+    name, reps, element, rest, muscle, series, description, parent, parentId,  userId, order
   }
   ```
 
   ```
   Respuesta:
-  NO SE
+  {
+    "id": 5,
+    "name": "test",
+    "reps": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+    ],
+    "element": "test",
+    "rest": 5,
+    "muscle": "test",
+    "series": 4,
+    "description": "test",
+    "order": 1,
+    "UserId": 1
+  }
   ERROR {message: "There was a problem creating the Exercise"}
   ```
 
@@ -343,12 +415,29 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Parámetros de solicitud:
-  { parent, parentId, exerciseId }
+  { parent, parentId, exerciseId, order }
   ```
 
   ```
   Respuesta:
-  NO SE
+  {
+    "id": 1,
+    "name": "test",
+    "reps": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+    ],
+    "element": "test",
+    "rest": 5,
+    "muscle": "test",
+    "series": 4,
+    "description": "test",
+    "order": 5,
+    "UserId": 1
+  }
   {message: "exercise not found"}
   ERROR {message: "There was a problem adding the Exercise"}
   ```
