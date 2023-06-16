@@ -40,12 +40,11 @@ router.post("/newRoutine/:userId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const { name, selectDay, description } = req.body;
+    const { name, selectDay } = req.body;
 
     const newRoutine = await Routine.create({
       name,
       selectDay,
-      description,
       UserId: userId,
     });
 
@@ -70,9 +69,9 @@ router.put("/updateRoutine/:routineId", async (req, res) => {
       return res.status(404).json({ message: "routine not found" });
     }
 
-    const { name, selectDay, description } = req.body;
+    const { name, selectDay } = req.body;
 
-    await routine.update({ name, selectDay, description });
+    await routine.update({ name, selectDay });
     res.status(200).send(routine);
   } catch (error) {
     res.status(422).send({
