@@ -98,6 +98,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ```
   Respuesta:
   (token)
+
   ERROR {message: "There was a problem creating the user"}
   ```
 
@@ -113,6 +114,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   (token)
   {message: "Invalid user"}
   {message: "Invalid password"}
+
   ERROR {message: "There was a problem login the user"}
   ```
 
@@ -122,6 +124,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
       {
           "id":
@@ -132,6 +135,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
           "email": ""
       }
   ]
+
   ERROR {message: "There was a problem finding all users"}
   ```
 
@@ -139,6 +143,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
       "id":
       "name": ""
@@ -147,6 +152,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
       "country": ""
       "email": ""
   }
+
   ERROR {message: "There was a problem finding the user"}
   ```
 
@@ -159,6 +165,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
       "id":
       "name": ""
@@ -168,6 +175,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
       "email": ""
   }
   { message: "User not found" }
+
   ERROR { message: "Invalid token" }
   ```
 
@@ -175,42 +183,15 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
     {
         "name": "",
-        "selectDay": "",
-        "Exercises": [
-            {
-                "id":
-                "name": ""
-                "reps": []
-                "element": ""
-                "rest":
-                "muscle": ""
-                "series":
-                "description": ""
-                "order":
-                "UserId":
-                "RoutineExercise": {
-                    "RoutineId":
-                    "ExerciseId":
-                }
-            }
-        ],
-        "SuperSets": [
-           "id":
-                "order":
-                "rest":
-                "UserId":
-                "RoutineSuperSet": {
-                    "RoutineId":
-                    "SuperSetId":
-                },
-                "Exercises": []
-        ]
-    },
+        "selectDay": ""
+    }
   ]
   { message: "User not found" }
+
   ERROR {message: "There was a problem finding the user routines"}
   ```
 
@@ -218,6 +199,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
     {
         "id":
@@ -232,6 +214,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
         "UserId":
     },
   ]
+
   ERROR {message: "There was a problem finding the user exercises"}
   ```
 
@@ -239,6 +222,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
     {
         "id":
@@ -255,6 +239,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
         "Exercises": []
     }
   ]
+
   ERROR {message: "There was a problem finding the user superset"}
   ```
 
@@ -267,6 +252,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
       "id":
       "name": ""
@@ -278,6 +264,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
       "salt": ""
   }
   { message: "User not found" }
+
   ERROR {message: "There was a problem updating the user information"}
   ```
 
@@ -290,8 +277,10 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {message: "the email already exists"}
   {message: "Email is available for registration."}
+
   ERROR {message: "There was a problem checking the email"}
   ```
 
@@ -307,6 +296,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
     {
         "id":
@@ -321,6 +311,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
         "UserId":
     }
   ]
+
   ERROR {message: "There was a problem finding all routines"}
   ```
 
@@ -328,12 +319,13 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "name": ""
     "selectDay": ""
-    "UserId":
   }
+
   ERROR {message: "There was a problem finding the routine"}
   ```
 
@@ -341,12 +333,64 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
-    "id":
-    "name": ""
-    "selectDay": ""
-    "UserId":
+    "Exercises": [
+        {
+            "id":
+            "name": ""
+            "reps": [],
+            "element": ",
+            "rest": 5,
+            "muscle": ""
+            "series":
+            "description": ""
+            "order":
+            "UserId":
+            "RoutineExercise": {
+                "createdAt": "",
+                "updatedAt": "",
+                "RoutineId":
+                "ExerciseId":
+            }
+        }
+    ],
+    "SuperSets": [
+        {
+            "id":
+            "order":
+            "UserId":
+            "RoutineSuperSet": {
+                "createdAt": "",
+                "updatedAt": "",
+                "RoutineId":
+                "SuperSetId":
+            },
+            "Exercises": [
+                {
+                    "id":
+                    "name": ""
+                    "reps": []
+                    "element": ""
+                    "rest":
+                    "muscle": ""
+                    "series":
+                    "description": ""
+                    "order":
+                    "UserId":
+                    "SuperSetExercise": {
+                        "createdAt": ""
+                        "updatedAt": ""
+                        "SuperSetId":
+                        "ExerciseId":
+                    }
+                }
+            ]
+        },
+     ]
   }
+
+
   ERROR {message: "There was a problem finding the routine"}
   ```
 
@@ -359,12 +403,14 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "name": ""
     "selectDay": ""
     "UserId":
   }
+
   ERROR { message: "There was a problem creating Routine"}
   ```
 
@@ -377,6 +423,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "name": ""
@@ -384,6 +431,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     "UserId":
   }
   { message: "routine not found" }
+
   ERROR {message: "There was a problem updating the routine"}
   ```
 
@@ -391,7 +439,9 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   { message: "the routine has been removed" }
+
   ERROR {message: "There was a problem deleting the routine"}
   ```
 
@@ -407,6 +457,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
     {
         "id":
@@ -434,6 +485,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     },
 
   ]
+
   ERROR {message: "There was a problem finding all exercises"}
   ```
 
@@ -441,6 +493,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "name": ""
@@ -453,6 +506,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     "order":
     "UserId":
   }
+
   ERROR {"There was a problem finding the exercise"}
   ```
 
@@ -467,6 +521,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id": 5
     "name": ""
@@ -479,6 +534,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     "order":
     "UserId":
   }
+
   ERROR {message: "There was a problem creating the Exercise"}
   ```
 
@@ -491,6 +547,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "name": ""
@@ -504,6 +561,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     "UserId":
   }
   {message: "exercise not found"}
+
   ERROR {message: "There was a problem adding the Exercise"}
   ```
 
@@ -516,6 +574,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "name": ""
@@ -529,6 +588,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     "UserId":
   }
   { message: "exercise not found" }
+
   ERROR {message: "There was a problem updating the Exercise"}
   ```
 
@@ -536,7 +596,9 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   { message: "the exercise has been removed" }
+
   ERROR {message: "There was a problem deleting the Exercise"}
   ```
 
@@ -552,6 +614,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   [
     {
         "id":
@@ -566,6 +629,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
         "UserId":
     }
   ]
+
   ERROR {message: "There was a problem finding all superSets"}
   ```
 
@@ -573,11 +637,13 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "order":
     "UserId":
   }
+
   ERROR {message: "There was a problem finding the superset"}
   ```
 
@@ -590,11 +656,13 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   {
     "id":
     "UserId":
     "order":
   }
+
   ERROR {message: "There was a problem creating superset"}
   ```
 
@@ -602,7 +670,9 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Respuesta:
+
   { message: "the superset has been removed" }
+
   ERROR {message: "There was a problem deleting the superset"}
   ```
 
