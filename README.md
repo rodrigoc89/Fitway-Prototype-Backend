@@ -627,7 +627,3 @@ git push origin feature/nombre-de-la-funcionalidad
 ```
 
 6. Crea una pull request en el repositorio principal Fitway-Prototype-Backend para revisar tus cambios.
-
-## Licencia
-
-Fitway Prototype Backend se distribuye bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
