@@ -1,5 +1,5 @@
 const validatePassword = (password) => {
-  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,20}$/;
+  const regex = /^(?=.*\d)(?=.*[^\da-zA-Z]).{8,20}$/;
   return regex.test(password);
 };
 

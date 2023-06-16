@@ -60,8 +60,10 @@ router.get("/data/token", async (req, res) => {
 
     res.send({
       id: user.id,
-      fullName: user.fullName,
-      birthday: user.birthday,
+      name: user.name,
+      lastName: user.lastName,
+      birthdate: user.birthdate,
+      country: user.country,
       email: user.email,
     });
   } catch (error) {
@@ -72,29 +74,32 @@ router.get("/data/token", async (req, res) => {
 router.get("/routines/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findOne({
-      where: { id: userId },
-      attributes: { exclude: ["password", "salt"] },
+    const routines = await Routine.findAll({
+      where: { UserId: userId },
+      attributes: ["name", "selectDay"],
       include: [
         {
-          model: Routine,
+          model: Exercise,
+          order: [["order", "ASC"]],
+        },
+        {
+          model: SuperSet,
+          order: [["order", "ASC"]],
           include: [
-            { model: Exercise },
             {
-              model: SuperSet,
-              include: {
-                model: Exercise,
-              },
+              model: Exercise,
+              order: [["order", "ASC"]],
             },
           ],
         },
       ],
     });
-    if (!user.id) {
-      return res.status(404).send({ message: "User not found" });
+
+    if (!routines) {
+      return res.status(404).send({ message: "routines not found" });
     }
 
-    res.status(200).send(user);
+    res.status(200).send(routines);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
@@ -107,7 +112,10 @@ router.get("/routines/:userId", async (req, res) => {
 router.get("/exercises/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const exercises = await Exercise.findByPk(userId);
+    const exercises = await Exercise.findAll({ where: { UserId: userId } });
+    if (!exercises) {
+      return res.status(404).send({ message: "exercises not found" });
+    }
     res.status(200).send(exercises);
   } catch (error) {
     res.status(422).send({
@@ -121,7 +129,17 @@ router.get("/exercises/:userId", async (req, res) => {
 router.get("/superSets/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const superSets = await SuperSet.findByPk(userId);
+    const superSets = await SuperSet.findAll({
+      where: { UserId: userId },
+      include: [
+        {
+          model: Exercise,
+        },
+      ],
+    });
+    if (!superSets) {
+      return res.status(404).send({ message: "superSets not found" });
+    }
     res.status(200).send(superSets);
   } catch (error) {
     res.status(422).send({
@@ -132,7 +150,7 @@ router.get("/superSets/:userId", async (req, res) => {
   }
 });
 
-router.post("/editProfile/:id", async (req, res) => {
+router.put("/editProfile/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const { weight } = req.body;

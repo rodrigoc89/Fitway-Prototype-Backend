@@ -84,47 +84,516 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
 ### Endpoints de Usuarios
 
-#### router : `/user`
+#### router : `/users`
 
-- `GET /data`: devuelve al token desencriptado con los datos del usuario.
-- `GET /info/:userId`: Obtiene la informacion del usuario junto con las rutinas, exercicios y supersets por su ID.
-- `POST /register`: Crea un nuevo usuario y genera un token.
-- `POST /login`: Permite el ingreso del usuario.
-- `POST /logout`: Limpia la cookie cuando el usuario cierra su sesion.
-- `POST /emailValidate`: Verifica que el email no este registrado en la base de datos.
-- `PUT /editProfile/:userId`: Actualiza la informacion del usuario existente por su ID.
+<details><summary> Ver </summary>
+
+- `POST /users/register`
+
+  ```
+  Parámetros de solicitud:
+  { name, lastName, birthdate, password, email, country }
+  ```
+
+  ```
+  Respuesta:
+  (token)
+  ERROR {message: "There was a problem creating the user"}
+  ```
+
+- `POST /users/login`
+
+  ```
+  Parámetros de solicitud:
+  { email, password }
+  ```
+
+  ```
+  Respuesta:
+  (token)
+  {message: "Invalid user"}
+  {message: "Invalid password"}
+  ERROR {message: "There was a problem login the user"}
+  ```
+
+- `POST /users/logout`
+
+- `GET users/`
+
+  ```
+  Respuesta:
+  [
+      {
+          "id":
+          "name": ""
+          "lastName": ""
+          "birthdate": ""
+          "country": ""
+          "email": ""
+      }
+  ]
+  ERROR {message: "There was a problem finding all users"}
+  ```
+
+- `GET /users/:userId`
+
+  ```
+  Respuesta:
+  {
+      "id":
+      "name": ""
+      "lastName": ""
+      "birthdate": ""
+      "country": ""
+      "email": ""
+  }
+  ERROR {message: "There was a problem finding the user"}
+  ```
+
+- `GET /users/data/token`
+
+  ```
+  Parámetros de solicitud:
+  header authorization: (token)
+  ```
+
+  ```
+  Respuesta:
+  {
+      "id":
+      "name": ""
+      "lastName": ""
+      "birthdate": ""
+      "country": ""
+      "email": ""
+  }
+  { message: "User not found" }
+  ERROR { message: "Invalid token" }
+  ```
+
+- `GET /users/routines/:userId`
+
+  ```
+  Respuesta:
+  [
+    {
+        "name": "",
+        "selectDay": "",
+        "Exercises": [
+            {
+                "id":
+                "name": ""
+                "reps": []
+                "element": ""
+                "rest":
+                "muscle": ""
+                "series":
+                "description": ""
+                "order":
+                "UserId":
+                "RoutineExercise": {
+                    "RoutineId":
+                    "ExerciseId":
+                }
+            }
+        ],
+        "SuperSets": [
+           "id":
+                "order":
+                "rest":
+                "UserId":
+                "RoutineSuperSet": {
+                    "RoutineId":
+                    "SuperSetId":
+                },
+                "Exercises": []
+        ]
+    },
+  ]
+  { message: "User not found" }
+  ERROR {message: "There was a problem finding the user routines"}
+  ```
+
+- `GET /users/exercises/:userId`
+
+  ```
+  Respuesta:
+  [
+    {
+        "id":
+        "name": ""
+        "reps": []
+        "element": ""
+        "rest": ,
+        "muscle": ""
+        "series":
+        "description": ""
+        "order":
+        "UserId":
+    },
+  ]
+  ERROR {message: "There was a problem finding the user exercises"}
+  ```
+
+- `GET /users/superSets/:userId`
+
+  ```
+  Respuesta:
+  [
+    {
+        "id":
+        "order":
+        "rest":
+        "UserId":
+        "Exercises": []
+    },
+    {
+        "id":
+        "order":
+        "rest":
+        "UserId":
+        "Exercises": []
+    }
+  ]
+  ERROR {message: "There was a problem finding the user superset"}
+  ```
+
+- ` POST /users/editProfile/:id`
+
+  ```
+  Parámetros de solicitud:
+  { weight }
+  ```
+
+  ```
+  Respuesta:
+  {
+      "id":
+      "name": ""
+      "lastName": ""
+      "birthdate": ""
+      "country": ""
+      "email": ""
+      "password": ""
+      "salt": ""
+  }
+  { message: "User not found" }
+  ERROR {message: "There was a problem updating the user information"}
+  ```
+
+- `POST /users/emailValidate`
+
+  ```
+  Parámetros de solicitud:
+  { email }
+  ```
+
+  ```
+  Respuesta:
+  {message: "the email already exists"}
+  {message: "Email is available for registration."}
+  ERROR {message: "There was a problem checking the email"}
+  ```
+
+  </details>
 
 ### Endpoints de rutinas
 
 #### router : `/routine`
 
-- `GET /routines`: Obtiene todas las rutinas.
-- `GET /routines/:id`: Obtiene una rutina específica por su ID.
-- `POST /newRoutine/:userId"`: Crea una nueva rutina.
-- `POST /addExercise/:routineId`: Añade un ejercicio a la rutina
-- `PUT //updateRoutine/:id`: Actualiza una rutina existente por su ID.
-- `DELETE /deleteRoutine/:routineId`: Elimina una rutina existente por su ID.
+<details><summary> Ver </summary>
+
+- `GET /routine/`
+
+  ```
+  Respuesta:
+  [
+    {
+        "id":
+        "name": ""
+        "selectDay": ""
+        "UserId":
+    },
+    {
+        "id":
+        "name": ""
+        "selectDay": ""
+        "UserId":
+    }
+  ]
+  ERROR {message: "There was a problem finding all routines"}
+  ```
+
+- `GET /routine/`:routineId
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "selectDay": ""
+    "UserId":
+  }
+  ERROR {message: "There was a problem finding the routine"}
+  ```
+
+- `POST /routine/newRoutine/:userId`
+
+  ```
+  Parámetros de solicitud:
+  { name, selectDay }
+  ```
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "selectDay": ""
+    "UserId":
+  }
+  ERROR { message: "There was a problem creating Routine"}
+  ```
+
+- `PUT /routine/updateRoutine/:routineId`
+
+  ```
+  Parámetros de solicitud:
+  { name, selectDay, description }
+  ```
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "selectDay": ""
+    "UserId":
+  }
+  { message: "routine not found" }
+  ERROR {message: "There was a problem updating the routine"}
+  ```
+
+- `DELETE /routine/deleteRoutine/:routineId`
+
+  ```
+  Respuesta:
+  { message: "the routine has been removed" }
+  ERROR {message: "There was a problem deleting the routine"}
+  ```
+
+  </details>
 
 ### Endpoints de ejercicios
 
 #### router : `/exercise`
 
-- `GET /exercises`: Obtiene todos los ejercicios.
-- `GET /exercises/:id`: Obtiene un ejercicio específico por su ID.
-- `POST /newExercise`: Crea un nuevo ejercicio.
-- `PUT /editExercise/:exerciseId`: Actualiza un ejercicio existente por su ID.
-- `DELETE /deleteExercise/:exerciseId`: Elimina un ejercicio existente por su ID.
+<details><summary> Ver </summary>
+
+- `GET /exercise/`
+
+  ```
+  Respuesta:
+  [
+    {
+        "id":
+        "name": ""
+        "reps": []
+        "element": ""
+        "rest":
+        "muscle": ""
+        "series":
+        "description": ""
+        "order":
+        "UserId":
+    },
+    {
+        "id":
+        "name": ""
+        "reps": []
+        "element": ""
+        "rest":
+        "muscle": ""
+        "series":
+        "description": ""
+        "order":
+        "UserId":
+    },
+
+  ]
+  ERROR {message: "There was a problem finding all exercises"}
+  ```
+
+- `GET /exercise/:ExerciseId`
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "reps": []
+    "element": ""
+    "rest":
+    "muscle": ""
+    "series":
+    "description": ""
+    "order":
+    "UserId":
+  }
+  ERROR {"There was a problem finding the exercise"}
+  ```
+
+- `POST /exercise/newExercise`
+
+  ```
+  Parámetros de solicitud:
+  {
+    name, reps, element, rest, muscle, series, description, parent, parentId,  userId, order
+  }
+  ```
+
+  ```
+  Respuesta:
+  {
+    "id": 5
+    "name": ""
+    "reps": []
+    "element": ""
+    "rest":
+    "muscle": ""
+    "series":
+    "description": ""
+    "order":
+    "UserId":
+  }
+  ERROR {message: "There was a problem creating the Exercise"}
+  ```
+
+- `POST /exercise/addExercise`
+
+  ```
+  Parámetros de solicitud:
+  { parent, parentId, exerciseId, order }
+  ```
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "reps": []
+    "element": ""
+    "rest":
+    "muscle": ""
+    "series":
+    "description": ""
+    "order":
+    "UserId":
+  }
+  {message: "exercise not found"}
+  ERROR {message: "There was a problem adding the Exercise"}
+  ```
+
+- `PUT /exercise/editExercise/:exerciseId`
+
+  ```
+  Parámetros de solicitud:
+  { name, reps, element, rest, muscle, series, description }
+  ```
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "name": ""
+    "reps": []
+    "element": ""
+    "rest":
+    "muscle": ""
+    "series":
+    "description": ""
+    "order":
+    "UserId":
+  }
+  { message: "exercise not found" }
+  ERROR {message: "There was a problem updating the Exercise"}
+  ```
+
+- `DELETE /exercise/deleteExercise/:exerciseId`
+
+  ```
+  Respuesta:
+  { message: "the exercise has been removed" }
+  ERROR {message: "There was a problem deleting the Exercise"}
+  ```
+
+  </details>
 
 ### Endpoints de superseries
 
 #### router : `/superset`
 
-- `GET /supersets`: Obtiene todas las superseries.
-- `GET /supersets/:id`: Obtiene una superserie específica por su ID.
-- `POST /supersets/:routineId`: Crea una nueva superserie.
-- `POST /newExercise/:supersetId` Crea un nuevo ejercicio
-- `PUT /supersets/:id`: Actualiza una superserie existente por su ID.
-- `DELETE /supersets/:id`: Elimina una superserie existente por su ID.
+<details><summary> Ver </summary>
+
+- `GET /superset/`
+
+  ```
+  Respuesta:
+  [
+    {
+        "id":
+        "order":
+        "rest":
+        "UserId":
+    },
+    {
+        "id":
+        "order":
+        "rest":
+        "UserId":
+    }
+  ]
+  ERROR {message: "There was a problem finding all superSets"}
+  ```
+
+- `GET /superset/:supersetId`
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "order":
+    "UserId":
+  }
+  ERROR {message: "There was a problem finding the superset"}
+  ```
+
+- `POST /superset/`
+
+  ```
+  Parámetros de solicitud:
+  { userId, parent, parentId, order }
+  ```
+
+  ```
+  Respuesta:
+  {
+    "id":
+    "UserId":
+    "order":
+  }
+  ERROR {message: "There was a problem creating superset"}
+  ```
+
+- `DELETE /superset/deleteSuperset/:supersetId`
+
+  ```
+  Respuesta:
+  { message: "the superset has been removed" }
+  ERROR {message: "There was a problem deleting the superset"}
+  ```
+
+  </details>
 
 ## Contribuir
 
