@@ -19,7 +19,6 @@ Exercise.init(
     },
     rest: {
       type: Sequelize.INTEGER,
-      allowNull: false,
     },
     muscle: {
       type: Sequelize.STRING,
