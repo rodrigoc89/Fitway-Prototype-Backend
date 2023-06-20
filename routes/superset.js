@@ -32,11 +32,12 @@ router.get("/:supersetId", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { userId, parent, parentId, order } = req.body;
+    const { userId, parent, parentId, order, quantity } = req.body;
 
     const newSuperset = await SuperSet.create({
       UserId: userId,
       order,
+      quantity,
     });
 
     if (parent == "Routine") {
