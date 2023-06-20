@@ -8,6 +8,10 @@ SuperSet.init(
     order: {
       type: Sequelize.INTEGER,
     },
+    quantity: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   },
   { sequelize: db, modelName: "SuperSet", timestamps: false }
 );
