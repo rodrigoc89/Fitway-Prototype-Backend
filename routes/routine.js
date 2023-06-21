@@ -34,7 +34,7 @@ router.get("/dataRoutine/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
     const dataRoutine = await Routine.findByPk(routineId, {
-      attributes: { exclude: ["name", "selectDay", "UserId"] },
+      attributes: { exclude: ["UserId"] },
       include: [
         {
           model: Exercise,
