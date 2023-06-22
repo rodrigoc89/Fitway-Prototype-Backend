@@ -112,7 +112,7 @@ router.post("/addExercise", async (req, res) => {
   }
 });
 
-router.put("/editExercise/:exerciseId", async (req, res) => {
+router.patch("/editExercise/:exerciseId", async (req, res) => {
   const { exerciseId } = req.params;
   try {
     const exercise = await Exercise.findOne({ where: { id: exerciseId } });

@@ -88,7 +88,7 @@ router.post("/newRoutine/:userId", async (req, res) => {
   }
 });
 
-router.put("/updateRoutine/:routineId", async (req, res) => {
+router.patch("/updateRoutine/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
     const routine = await Routine.findByPk(routineId);

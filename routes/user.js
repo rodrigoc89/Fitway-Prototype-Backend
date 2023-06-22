@@ -134,7 +134,7 @@ router.get("/superSets/:userId", async (req, res) => {
   }
 });
 
-router.put("/editProfile/:id", async (req, res) => {
+router.patch("/editProfile/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const { weight } = req.body;

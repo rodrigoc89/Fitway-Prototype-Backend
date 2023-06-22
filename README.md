@@ -243,7 +243,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem finding the user superset"}
   ```
 
-- ` POST /users/editProfile/:id`
+- ` PATCH /users/editProfile/:id`
 
   ```
   Parámetros de solicitud:
@@ -414,7 +414,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR { message: "There was a problem creating Routine"}
   ```
 
-- `PUT /routine/updateRoutine/:routineId`
+- `patch /routine/updateRoutine/:routineId`
 
   ```
   Parámetros de solicitud:
@@ -565,7 +565,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem adding the Exercise"}
   ```
 
-- `PUT /exercise/editExercise/:exerciseId`
+- `patch /exercise/editExercise/:exerciseId`
 
   ```
   Parámetros de solicitud:
