@@ -1,6 +1,5 @@
 const Router = require("express");
 const { Routine, Exercise, SuperSet, User } = require("../model");
-
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -19,7 +18,7 @@ router.get("/", async (req, res) => {
 router.get("/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
-    const routine = await Routine.findByPk({ where: { id: routineId } });
+    const routine = await Routine.findByPk(routineId);
     res.status(200).send(routine);
   } catch (error) {
     res.status(422).send({
@@ -48,6 +47,11 @@ router.get("/dataRoutine/:routineId", async (req, res) => {
         },
       ],
     });
+
+    if (!dataRoutine) {
+      return res.status(404).json({ message: "Routine not found" });
+    }
+
     res.status(200).send(dataRoutine);
   } catch (error) {
     res.status(422).send({
@@ -62,7 +66,7 @@ router.get("/dataRoutine/:routineId", async (req, res) => {
 router.post("/newRoutine/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await User.findByPk(userId);
 
     if (!user) {
       return res.status(404).json({ message: "user not found" });
@@ -113,6 +117,29 @@ router.patch("/updateRoutine/:routineId", async (req, res) => {
 router.delete("/deleteRoutine/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
+    const routine = await Routine.findByPk(routineId);
+
+    const exercises = await routine.getExercises();
+
+    if (!exercises) {
+      return res.status(404).json({ message: "exercises not found" });
+    }
+
+    const superSets = await routine.getSuperSets();
+
+    if (!superSets) {
+      return res.status(404).json({ message: "superSets not found" });
+    }
+
+    for (const superSet of superSets) {
+      await superSet.removeExercises(exercises);
+      await superSet.destroy();
+    }
+
+    await routine.removeExercises(exercises);
+
+    await routine.removeSuperSets(superSets);
+
     await Routine.destroy({ where: { id: routineId } });
 
     res.status(200).send({
@@ -122,6 +149,36 @@ router.delete("/deleteRoutine/:routineId", async (req, res) => {
     res.status(422).send({
       error: "Unprocessable Entity",
       message: "There was a problem deleting the routine",
+      details: error.message,
+    });
+  }
+});
+
+router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
+  const { exerciseId, routineId } = req.params;
+
+  try {
+    const routine = await Routine.findByPk(routineId);
+
+    if (!routine) {
+      return res.status(404).json({ message: "routine not found" });
+    }
+
+    const exercise = await Exercise.findByPk(exerciseId);
+
+    if (!exercise) {
+      return res.status(404).json({ message: "exercise not found" });
+    }
+
+    await routine.removeExercise(exercise);
+
+    res
+      .status(200)
+      .send({ message: "The exercise has been removed from the Routine" });
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem deleting the exercise from the Routine",
       details: error.message,
     });
   }
