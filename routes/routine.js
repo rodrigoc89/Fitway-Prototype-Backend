@@ -121,13 +121,13 @@ router.delete("/deleteRoutine/:routineId", async (req, res) => {
 
     const exercises = await routine.getExercises();
 
-    if (!exercises) {
+    if (!exercises.length === 0) {
       return res.status(404).json({ message: "exercises not found" });
     }
 
     const superSets = await routine.getSuperSets();
 
-    if (!superSets) {
+    if (!superSets.length === 0) {
       return res.status(404).json({ message: "superSets not found" });
     }
 

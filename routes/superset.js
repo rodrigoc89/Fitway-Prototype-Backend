@@ -103,11 +103,11 @@ router.post("/addSuperSet/:superSetId/:routineId", async (req, res) => {
   }
 });
 
-router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
-  const { exerciseId, routineId } = req.params;
+router.delete("/removeExercise/:superSetId/:exerciseId", async (req, res) => {
+  const { exerciseId, superSetId } = req.params;
 
   try {
-    const superSet = await SuperSet.findByPk(routineId);
+    const superSet = await SuperSet.findByPk(superSetId);
 
     if (!superSet) {
       return res.status(404).json({ message: "exercise not found" });
@@ -136,14 +136,14 @@ router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
 router.delete("/deleteSuperset/:supersetId", async (req, res) => {
   const { supersetId } = req.params;
   try {
-    const exercises = await Exercise.findAll({
-      where: { SuperSetId: supersetId },
-    });
+    const superSet = await SuperSet.findByPk(supersetId);
 
-    if (!exercises) {
+    const exercises = await superSet.getExercises();
+
+    if (exercises.length === 0) {
       return res.status(404).json({ message: "exercises not found" });
     }
-    const superSet = await SuperSet.findByPk(supersetId);
+
     await superSet.removeExercises(exercises);
     await SuperSet.destroy({ where: { id: supersetId } });
 
