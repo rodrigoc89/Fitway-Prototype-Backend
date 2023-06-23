@@ -7,6 +7,10 @@ router.get("/", async (req, res) => {
   try {
     const exercises = await Exercise.findAll();
 
+    if (!exercises) {
+      return res.status(404).json({ message: "exercises not found" });
+    }
+
     res.status(200).send(exercises);
   } catch (error) {
     res.status(422).send({
@@ -22,6 +26,10 @@ router.get("/:ExerciseId", async (req, res) => {
   try {
     const exercises = await Exercise.findByPk(ExerciseId);
 
+    if (!exercises) {
+      return res.status(404).json({ message: "exercises not found" });
+    }
+
     res.status(200).send(exercises);
   } catch (error) {
     res.status(422).send({
@@ -32,7 +40,8 @@ router.get("/:ExerciseId", async (req, res) => {
   }
 });
 
-router.post("/newExercise", async (req, res) => {
+router.post("/newExercise/:userId/:parentId", async (req, res) => {
+  const { userId, parentId } = req.params;
   try {
     const {
       name,
@@ -43,8 +52,6 @@ router.post("/newExercise", async (req, res) => {
       series,
       description,
       parent,
-      parentId,
-      userId,
       order,
     } = req.body;
 
@@ -58,17 +65,23 @@ router.post("/newExercise", async (req, res) => {
       description,
       order,
     };
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
     const exercise = await Exercise.create({
       ...exerciseData,
       UserId: userId,
     });
 
     if (parent === "Routine") {
-      const routine = await Routine.findOne({ where: { id: parentId } });
+      const routine = await Routine.findByPk(parentId);
 
       await routine.addExercise(exercise);
     } else if (parent === "SuperSet") {
-      const superset = await SuperSet.findOne({ where: { id: parentId } });
+      const superset = await SuperSet.findByPk(parentId);
 
       await superset.addExercise(exercise);
     }
@@ -82,22 +95,27 @@ router.post("/newExercise", async (req, res) => {
   }
 });
 
-router.post("/addExercise", async (req, res) => {
+router.post("/addExercise/:exerciseId/:parentId", async (req, res) => {
+  const { parentId, exerciseId } = req.params;
   try {
-    const { parent, parentId, exerciseId } = req.body;
+    const { parent } = req.body;
 
-    const exercise = await Exercise.findOne({ where: { id: exerciseId } });
+    const exercise = await Exercise.findByPk(exerciseId);
 
     if (!exercise) {
       return res.status(404).json({ message: "exercise not found" });
     }
 
     if (parent === "Routine") {
-      const routine = await Routine.findOne({ where: { id: parentId } });
+      const routine = await Routine.findByPk(parentId);
+
+      if (!routine) {
+        return res.status(404).json({ message: "routine not found" });
+      }
 
       await routine.addExercise(exercise);
     } else if (parent === "SuperSet") {
-      const superset = await SuperSet.findOne({ where: { id: parentId } });
+      const superset = await SuperSet.findByPk(parentId);
 
       await superset.addExercise(exercise);
     }
@@ -112,10 +130,10 @@ router.post("/addExercise", async (req, res) => {
   }
 });
 
-router.put("/editExercise/:exerciseId", async (req, res) => {
+router.patch("/editExercise/:exerciseId", async (req, res) => {
   const { exerciseId } = req.params;
   try {
-    const exercise = await Exercise.findOne({ where: { id: exerciseId } });
+    const exercise = await Exercise.findByPk(exerciseId);
 
     if (!exercise) {
       return res.status(404).json({ message: "exercise not found" });
