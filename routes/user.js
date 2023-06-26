@@ -2,7 +2,6 @@ const Router = require("express");
 const { User, Routine, Exercise, SuperSet } = require("../model");
 
 const { generateToken, validateToken } = require("../config/token");
-const { validateAuth, validateAdmin } = require("../middleware/auth");
 const { passwordValidator } = require("../middleware/passwordStrong");
 
 const router = Router();
