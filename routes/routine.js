@@ -1,5 +1,5 @@
 const Router = require("express");
-const { Routine, Exercise, SuperSet, User } = require("../model");
+const { Routine, Exercise, SuperSet, User, Tag } = require("../model");
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -18,7 +18,14 @@ router.get("/", async (req, res) => {
 router.get("/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
-    const routine = await Routine.findByPk(routineId);
+    const routine = await Routine.findByPk(routineId, {
+      include: [
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+      ],
+    });
     res.status(200).send(routine);
   } catch (error) {
     res.status(422).send({
@@ -37,12 +44,15 @@ router.get("/dataRoutine/:routineId", async (req, res) => {
       include: [
         {
           model: Exercise,
+          through: { attributes: [] },
         },
         {
           model: SuperSet,
+          through: { attributes: [] },
 
           include: {
             model: Exercise,
+            through: { attributes: [] },
           },
         },
       ],
@@ -78,6 +88,7 @@ router.post("/newRoutine/:userId", async (req, res) => {
       name,
       selectDay,
       UserId: userId,
+      creator: user.nickname,
     });
 
     await user.addRoutine(newRoutine);

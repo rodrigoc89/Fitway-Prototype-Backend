@@ -179,7 +179,8 @@ router.post("/emailValidate", async (req, res) => {
 
 // REGISTER
 router.post("/register", passwordValidator, async (req, res) => {
-  const { name, lastName, birthdate, password, email, country } = req.body;
+  const { name, lastName, birthdate, password, email, country, nickname } =
+    req.body;
   try {
     const newUser = await User.create({
       name,
@@ -188,6 +189,7 @@ router.post("/register", passwordValidator, async (req, res) => {
       password,
       email,
       country,
+      nickname,
     });
 
     const payload = {
@@ -198,6 +200,7 @@ router.post("/register", passwordValidator, async (req, res) => {
       birthdate: newUser.birthdate,
       email: newUser.email,
       country: newUser.country,
+      nickname: newUser.nickname,
     };
 
     const token = generateToken(payload);

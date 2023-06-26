@@ -5,6 +5,15 @@ const bcrypt = require("bcrypt");
 class User extends Sequelize.Model {}
 User.init(
   {
+    nickname: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Field nickname cannot be null",
+        },
+      },
+    },
     name: {
       type: Sequelize.STRING,
       allowNull: false,

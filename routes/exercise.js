@@ -1,5 +1,5 @@
 const Router = require("express");
-const { Exercise, User, Routine, SuperSet } = require("../model");
+const { Exercise, User, Routine, SuperSet, Tag } = require("../model");
 
 const router = Router();
 
@@ -79,7 +79,11 @@ router.post("/newExercise/:userId/:parentId", async (req, res) => {
     if (parent === "Routine") {
       const routine = await Routine.findByPk(parentId);
 
+      const tag = await Tag.create({
+        tagName: exercise.muscle,
+      });
       await routine.addExercise(exercise);
+      await routine.addTag(tag);
     } else if (parent === "SuperSet") {
       const superset = await SuperSet.findByPk(parentId);
 

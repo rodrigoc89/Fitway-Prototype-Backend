@@ -2,6 +2,7 @@ const User = require("./User");
 const Routine = require("./Routine");
 const Exercise = require("./Exercise");
 const SuperSet = require("./SuperSet");
+const Tag = require("./Tag");
 
 // Establecer relación muchos a muchos entre Rutinas y Ejercicios
 Routine.belongsToMany(Exercise, { through: "RoutineExercise" });
@@ -15,6 +16,10 @@ Exercise.belongsToMany(SuperSet, { through: "SuperSetExercise" });
 Routine.belongsToMany(SuperSet, { through: "RoutineSuperSet" });
 SuperSet.belongsToMany(Routine, { through: "RoutineSuperSet" });
 
+// Establecer relación uno a muchos entre Rutinas y Etiquetas
+Routine.belongsToMany(Tag, { through: "RoutineTag" });
+Tag.belongsToMany(Routine, { through: "RoutineTag" });
+
 // Establecer relación uno a muchos entre Usuario y Rutinas
 User.hasMany(Routine);
 Routine.belongsTo(User);
@@ -27,4 +32,4 @@ Exercise.belongsTo(User);
 User.hasMany(SuperSet);
 SuperSet.belongsTo(User);
 
-module.exports = { User, Routine, Exercise, SuperSet };
+module.exports = { User, Routine, Exercise, SuperSet, Tag };
