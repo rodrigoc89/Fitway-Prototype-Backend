@@ -1,5 +1,5 @@
 const Router = require("express");
-const { User, Routine, Exercise, SuperSet } = require("../model");
+const { User, Routine, Exercise, SuperSet, Tag } = require("../model");
 const { Op } = require("sequelize");
 
 const router = Router();
@@ -21,12 +21,13 @@ router.get("/filter", async (req, res) => {
     const result = await Routine.findAll({
       attributes: ["id", "name", "selectDay", "creator"],
       include: {
-        model: Exercise,
+        model: Tag,
         where: {
-          muscle: {
+          tagName: {
             [Op.in]: muscles,
           },
         },
+        through: { attributes: [] },
       },
     });
 
