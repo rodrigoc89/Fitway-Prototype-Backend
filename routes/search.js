@@ -4,18 +4,28 @@ const { Op } = require("sequelize");
 
 const router = Router();
 
-router.get("/filter/:textSearch", async (req, res) => {
-  const { textSearch } = req.params;
+router.get("/filter", async (req, res) => {
+  const muscleNames = req.query.muscles;
+
+  if (!muscleNames) {
+    return res.status(400).json({ message: "Muscle names are required" });
+  }
+
+  let muscles = [];
+
+  if (typeof muscleNames === "string") {
+    muscles = muscleNames.split(",");
+  }
+
   try {
     const result = await Routine.findAll({
-      attributes: ["id", "name", "selectDay"],
+      attributes: ["id", "name", "selectDay", "creator"],
       include: {
         model: Exercise,
         where: {
-          [Op.or]: [
-            { name: { [Op.like]: `%${textSearch}%` } },
-            { muscle: { [Op.like]: `%${textSearch}%` } },
-          ],
+          muscle: {
+            [Op.in]: muscles,
+          },
         },
       },
     });
