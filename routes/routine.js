@@ -88,7 +88,7 @@ router.post("/newRoutine/:userId", async (req, res) => {
       name,
       selectDay,
       UserId: userId,
-      creator: user.nickname,
+      creator: user.userName,
     });
 
     await user.addRoutine(newRoutine);
