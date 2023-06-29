@@ -2,9 +2,9 @@ const Router = require("express");
 const { User, Routine, Exercise, SuperSet } = require("../model");
 
 const { generateToken, validateToken } = require("../config/token");
-const { validateAuth, validateAdmin } = require("../middleware/auth");
 const { passwordValidator } = require("../middleware/passwordStrong");
 
+const { Op } = require("sequelize");
 const router = Router();
 
 // REQUEST USER INFORMATION
@@ -180,7 +180,8 @@ router.post("/emailValidate", async (req, res) => {
 
 // REGISTER
 router.post("/register", passwordValidator, async (req, res) => {
-  const { name, lastName, birthdate, password, email, country } = req.body;
+  const { name, lastName, birthdate, password, email, country, username } =
+    req.body;
   try {
     const newUser = await User.create({
       name,
@@ -189,16 +190,13 @@ router.post("/register", passwordValidator, async (req, res) => {
       password,
       email,
       country,
+      username,
     });
 
     const payload = {
       id: newUser.id,
-      name: newUser.name,
-      lastName: newUser.lastName,
-      password: newUser.password,
-      birthdate: newUser.birthdate,
       email: newUser.email,
-      country: newUser.country,
+      username: newUser.username,
     };
 
     const token = generateToken(payload);
@@ -216,9 +214,11 @@ router.post("/register", passwordValidator, async (req, res) => {
 
 //LOGIN
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { userLogin, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({
+      where: { [Op.or]: [{ email: userLogin }, { username: userLogin }] },
+    });
 
     if (!user) {
       return res.status(401).send({
@@ -238,12 +238,8 @@ router.post("/login", async (req, res) => {
 
     const payload = {
       id: user.id,
-      name: user.name,
-      lastName: user.lastName,
-      birthdate: user.birthdate,
-      password: user.password,
       email: user.email,
-      country: user.country,
+      username: user.username,
     };
 
     const token = generateToken(payload);
