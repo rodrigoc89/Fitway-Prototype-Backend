@@ -4,6 +4,7 @@ const { User, Routine, Exercise, SuperSet } = require("../model");
 const { generateToken, validateToken } = require("../config/token");
 const { passwordValidator } = require("../middleware/passwordStrong");
 
+const { Op } = require("sequelize");
 const router = Router();
 
 // REQUEST USER INFORMATION
@@ -179,7 +180,7 @@ router.post("/emailValidate", async (req, res) => {
 
 // REGISTER
 router.post("/register", passwordValidator, async (req, res) => {
-  const { name, lastName, birthdate, password, email, country, userName } =
+  const { name, lastName, birthdate, password, email, country, username } =
     req.body;
   try {
     const newUser = await User.create({
@@ -189,13 +190,13 @@ router.post("/register", passwordValidator, async (req, res) => {
       password,
       email,
       country,
-      userName,
+      username,
     });
 
     const payload = {
       id: newUser.id,
       email: newUser.email,
-      userName: newUser.userName,
+      username: newUser.username,
     };
 
     const token = generateToken(payload);
@@ -213,9 +214,11 @@ router.post("/register", passwordValidator, async (req, res) => {
 
 //LOGIN
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { userLogin, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({
+      where: { [Op.or]: [{ email: userLogin }, { username: userLogin }] },
+    });
 
     if (!user) {
       return res.status(401).send({
@@ -236,7 +239,7 @@ router.post("/login", async (req, res) => {
     const payload = {
       id: user.id,
       email: user.email,
-      userName: user.userName,
+      username: user.username,
     };
 
     const token = generateToken(payload);

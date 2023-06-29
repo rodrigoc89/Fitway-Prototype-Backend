@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 class User extends Sequelize.Model {}
 User.init(
   {
-    userName: {
+    username: {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true,
