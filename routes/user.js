@@ -1,5 +1,5 @@
 const Router = require("express");
-const { User, Routine, Exercise, SuperSet } = require("../model");
+const { User, Routine, Exercise, SuperSet, Tag } = require("../model");
 
 const { generateToken, validateToken } = require("../config/token");
 const { passwordValidator } = require("../middleware/passwordStrong");
@@ -77,6 +77,12 @@ router.get("/routines/:userId", async (req, res) => {
     const routines = await Routine.findAll({
       where: { UserId: userId },
       attributes: { exclude: ["UserId"] },
+      include: [
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+      ],
     });
 
     if (!routines) {
