@@ -4,6 +4,47 @@ const { Op } = require("sequelize");
 
 const router = Router();
 
+router.get("/", async (req, res) => {
+  const searchQuery = req.query.search;
+  try {
+    if (!searchQuery) {
+      const result = await Routine.findAll({
+        where: {
+          public: true,
+        },
+      });
+
+      return res.status(200).send(result);
+    }
+
+    const searchArray = Array.isArray(searchQuery)
+      ? searchQuery
+      : searchQuery.split(",");
+
+    const idValues = searchArray.filter((value) => !isNaN(value)).map(Number);
+
+    console.log(idValues);
+    console.log(searchArray);
+    const result = await Routine.findAll({
+      where: {
+        public: true,
+        [Op.or]: [
+          { id: { [Op.in]: idValues } },
+          { name: { [Op.in]: searchArray } },
+          { creator: { [Op.in]: searchArray } },
+        ],
+      },
+    });
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "An error occurred during search",
+      details: error.message,
+    });
+  }
+});
+
 router.get("/filter", async (req, res) => {
   const muscleNames = req.query.muscles;
 
@@ -19,6 +60,9 @@ router.get("/filter", async (req, res) => {
 
   try {
     const result = await Routine.findAll({
+      where: {
+        public: true,
+      },
       attributes: ["id", "name", "selectDay", "creator"],
       include: {
         model: Tag,

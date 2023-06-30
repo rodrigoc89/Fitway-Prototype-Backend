@@ -4,7 +4,9 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const routines = await Routine.findAll();
+    const routines = await Routine.findAll({
+      where: { public: true },
+    });
     res.status(200).send(routines);
   } catch (error) {
     res.status(422).send({
@@ -82,13 +84,14 @@ router.post("/newRoutine/:userId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const { name, selectDay } = req.body;
+    const { name, selectDay, public } = req.body;
 
     const newRoutine = await Routine.create({
       name,
       selectDay,
       UserId: userId,
       creator: user.username,
+      public,
     });
 
     await user.addRoutine(newRoutine);
