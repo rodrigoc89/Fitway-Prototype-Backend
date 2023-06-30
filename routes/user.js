@@ -83,7 +83,6 @@ router.get("/routines/:userId", async (req, res) => {
           through: { attributes: [] },
         },
       ],
-      group: ["Tag.id"],
     });
 
     if (!routines) {
