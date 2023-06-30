@@ -74,20 +74,17 @@ router.get("/data/token", async (req, res) => {
 router.get("/routines/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const routines = await Routine.findAll({
-      where: { UserId: userId },
-      attributes: { exclude: ["UserId"] },
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const routines = await user.getRoutines({
       include: [
-        {
-          model: Tag,
-          through: { attributes: [] },
-        },
+        { model: User, through: { where: { UserId: userId } }, attributes: [] },
       ],
     });
-
-    if (!routines) {
-      return res.status(404).send({ message: "routines not found" });
-    }
 
     res.status(200).send(routines);
   } catch (error) {
