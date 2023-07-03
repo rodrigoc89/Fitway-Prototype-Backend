@@ -16,6 +16,11 @@ Routine.init(
     creator: {
       type: Sequelize.STRING(),
     },
+    public: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   },
   { sequelize: db, modelName: "Routine", timestamps: false }
 );

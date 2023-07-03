@@ -4,7 +4,15 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const routines = await Routine.findAll();
+    const routines = await Routine.findAll({
+      // where: { public: true },
+      include: [
+        {
+          model: User,
+          through: { attributes: [] },
+        },
+      ],
+    });
     res.status(200).send(routines);
   } catch (error) {
     res.status(422).send({
@@ -82,13 +90,14 @@ router.post("/newRoutine/:userId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const { name, selectDay } = req.body;
+    const { name, selectDay, public } = req.body;
 
     const newRoutine = await Routine.create({
       name,
       selectDay,
       UserId: userId,
       creator: user.username,
+      public,
     });
 
     await user.addRoutine(newRoutine);
@@ -125,20 +134,25 @@ router.patch("/updateRoutine/:routineId", async (req, res) => {
   }
 });
 
-router.delete("/deleteRoutine/:routineId", async (req, res) => {
-  const { routineId } = req.params;
+router.delete("/deleteRoutine/:userId/:routineId", async (req, res) => {
+  const { routineId, userId } = req.params;
   try {
     const routine = await Routine.findByPk(routineId);
 
-    const exercises = await routine.getExercises();
+    const user = await User.findByPk(userId);
 
-    if (!exercises.length === 0) {
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const exercises = await routine.getExercises();
+    const superSets = await routine.getSuperSets();
+
+    if (!exercises.length) {
       return res.status(404).json({ message: "exercises not found" });
     }
 
-    const superSets = await routine.getSuperSets();
-
-    if (!superSets.length === 0) {
+    if (!superSets.length) {
       return res.status(404).json({ message: "superSets not found" });
     }
 
@@ -148,12 +162,14 @@ router.delete("/deleteRoutine/:routineId", async (req, res) => {
     }
 
     await routine.removeExercises(exercises);
-
     await routine.removeSuperSets(superSets);
 
-    await Routine.destroy({ where: { id: routineId } });
+    if (!routine.public) {
+      await Routine.destroy({ where: { id: routineId } });
+    }
+    await routine.removeUser(user);
 
-    res.status(200).send({
+    res.status(200).json({
       message: "the routine has been removed",
     });
   } catch (error) {
@@ -185,7 +201,7 @@ router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
 
     res
       .status(200)
-      .send({ message: "The exercise has been removed from the Routine" });
+      .json({ message: "The exercise has been removed from the Routine" });
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",

@@ -74,20 +74,17 @@ router.get("/data/token", async (req, res) => {
 router.get("/routines/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const routines = await Routine.findAll({
-      where: { UserId: userId },
-      attributes: { exclude: ["UserId"] },
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const routines = await user.getRoutines({
       include: [
-        {
-          model: Tag,
-          through: { attributes: [] },
-        },
+        { model: User, through: { where: { UserId: userId } }, attributes: [] },
       ],
     });
-
-    if (!routines) {
-      return res.status(404).send({ message: "routines not found" });
-    }
 
     res.status(200).send(routines);
   } catch (error) {
@@ -140,15 +137,19 @@ router.get("/superSets/:userId", async (req, res) => {
   }
 });
 
-router.patch("/editProfile/:id", async (req, res) => {
-  const { id } = req.params;
+router.patch("/editProfile/:userId", async (req, res) => {
+  const { userId } = req.params;
   try {
-    const { weight } = req.body;
-    const user = await User.findOne({ where: { id: id } });
+    const { country, birthdate, lastName, name, username } = req.body;
+
+    const user = await User.findByPk(userId);
+
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
-    await user.update({ weight });
+
+    await user.update({ country, birthdate, lastName, name, username });
+
     res.status(200).send(user);
   } catch (error) {
     res.status(422).send({

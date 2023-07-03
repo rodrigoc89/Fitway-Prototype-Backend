@@ -21,8 +21,8 @@ Routine.belongsToMany(Tag, { through: "RoutineTag" });
 Tag.belongsToMany(Routine, { through: "RoutineTag" });
 
 // Establecer relación uno a muchos entre Usuario y Rutinas
-User.hasMany(Routine);
-Routine.belongsTo(User);
+User.belongsToMany(Routine, { through: "UserRoutine" });
+Routine.belongsToMany(User, { through: "UserRoutine" });
 
 // Establecer relación uno a muchos entre Usuario y Ejercicios
 User.hasMany(Exercise);
