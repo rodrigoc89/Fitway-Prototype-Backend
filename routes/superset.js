@@ -110,7 +110,7 @@ router.delete("/removeExercise/:superSetId/:exerciseId", async (req, res) => {
     const superSet = await SuperSet.findByPk(superSetId);
 
     if (!superSet) {
-      return res.status(404).json({ message: "exercise not found" });
+      return res.status(404).json({ message: "super set not found" });
     }
 
     const exercise = await Exercise.findByPk(exerciseId);
@@ -140,11 +140,11 @@ router.delete("/deleteSuperset/:supersetId", async (req, res) => {
 
     const exercises = await superSet.getExercises();
 
-    if (exercises.length === 0) {
-      return res.status(404).json({ message: "exercises not found" });
+    if (exercises.length !== 0) {
+      // return res.status(404).json({ message: "exercises not found" });
+      await superSet.removeExercises(exercises);
     }
 
-    await superSet.removeExercises(exercises);
     await SuperSet.destroy({ where: { id: supersetId } });
 
     res.status(200).send({ message: "the super set has been removed" });
