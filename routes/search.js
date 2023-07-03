@@ -23,8 +23,6 @@ router.get("/", async (req, res) => {
 
     const idValues = searchArray.filter((value) => !isNaN(value)).map(Number);
 
-    console.log(idValues);
-    console.log(searchArray);
     const result = await Routine.findAll({
       where: {
         public: true,

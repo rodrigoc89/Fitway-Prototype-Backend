@@ -90,13 +90,12 @@ router.post("/newRoutine/:userId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const { name, selectDay, public } = req.body;
+    const { name, selectDay, public, creator } = req.body;
 
     const newRoutine = await Routine.create({
       name,
       selectDay,
-      UserId: userId,
-      creator: user.username,
+      creator,
       public,
     });
 
@@ -147,14 +146,6 @@ router.delete("/deleteRoutine/:userId/:routineId", async (req, res) => {
 
     const exercises = await routine.getExercises();
     const superSets = await routine.getSuperSets();
-
-    if (!exercises.length) {
-      return res.status(404).json({ message: "exercises not found" });
-    }
-
-    if (!superSets.length) {
-      return res.status(404).json({ message: "superSets not found" });
-    }
 
     for (const superSet of superSets) {
       await superSet.removeExercises(exercises);
