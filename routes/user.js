@@ -83,6 +83,10 @@ router.get("/routines/:userId", async (req, res) => {
     const routines = await user.getRoutines({
       include: [
         { model: User, through: { where: { UserId: userId } }, attributes: [] },
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
       ],
     });
 
