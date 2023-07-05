@@ -34,6 +34,12 @@ Exercise.init(
     order: {
       type: Sequelize.INTEGER,
     },
+    muscleImg: {
+      type: Sequelize.STRING,
+    },
+    elementImg: {
+      type: Sequelize.STRING,
+    },
   },
   { sequelize: db, modelName: "Exercise", timestamps: false }
 );

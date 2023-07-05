@@ -1,5 +1,6 @@
 const Router = require("express");
 const { Exercise, User, Routine, SuperSet, Tag } = require("../model");
+const { Op } = require("sequelize");
 
 const router = Router();
 
@@ -40,99 +41,157 @@ router.get("/:ExerciseId", async (req, res) => {
   }
 });
 
-router.post("/newExercise/:userId/:parentId", async (req, res) => {
-  const { userId, parentId } = req.params;
-  try {
-    const {
-      name,
-      reps,
-      element,
-      rest,
-      muscle,
-      series,
-      description,
-      parent,
-      order,
-    } = req.body;
+router.post(
+  "/newExercise/:userId/:routineId/:supersetId?",
+  async (req, res) => {
+    const { userId, routineId, supersetId } = req.params;
 
-    const exerciseData = {
-      name,
-      reps,
-      element,
-      rest,
-      muscle,
-      series,
-      description,
-      order,
-    };
-    const user = await User.findByPk(userId);
+    try {
+      const {
+        name,
+        reps,
+        element,
+        rest,
+        muscle,
+        series,
+        description,
+        order,
+        muscleImg,
+        elementImg,
+      } = req.body;
 
-    if (!user) {
-      return res.status(404).json({ message: "user not found" });
-    }
+      const user = await User.findByPk(userId);
 
-    const exercise = await Exercise.create({
-      ...exerciseData,
-      UserId: userId,
-    });
-
-    if (parent === "Routine") {
-      const routine = await Routine.findByPk(parentId);
-
-      const tag = await Tag.create({
-        tagName: exercise.muscle,
-      });
-      await routine.addExercise(exercise);
-      await routine.addTag(tag);
-    } else if (parent === "SuperSet") {
-      const superset = await SuperSet.findByPk(parentId);
-
-      await superset.addExercise(exercise);
-    }
-    return res.status(201).send(exercise);
-  } catch (error) {
-    res.status(422).send({
-      error: "Unprocessable Entity",
-      message: "There was a problem creating the Exercise",
-      details: error.message,
-    });
-  }
-});
-
-router.post("/addExercise/:exerciseId/:parentId", async (req, res) => {
-  const { parentId, exerciseId } = req.params;
-  try {
-    const { parent } = req.body;
-
-    const exercise = await Exercise.findByPk(exerciseId);
-
-    if (!exercise) {
-      return res.status(404).json({ message: "exercise not found" });
-    }
-
-    if (parent === "Routine") {
-      const routine = await Routine.findByPk(parentId);
-
-      if (!routine) {
-        return res.status(404).json({ message: "routine not found" });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
 
-      await routine.addExercise(exercise);
-    } else if (parent === "SuperSet") {
-      const superset = await SuperSet.findByPk(parentId);
+      const routine = await Routine.findByPk(routineId);
 
-      await superset.addExercise(exercise);
+      if (!routine) {
+        return res
+          .status(404)
+          .json({ message: `Routine not found with ID ${routineId}` });
+      }
+
+      let superset;
+      if (supersetId) {
+        superset = await SuperSet.findByPk(supersetId);
+
+        if (!superset) {
+          return res
+            .status(404)
+            .json({ message: `Superset not found with ID ${supersetId}` });
+        }
+      }
+
+      const exercise = await Exercise.create({
+        name,
+        reps,
+        element,
+        rest,
+        muscle,
+        series,
+        description,
+        muscleImg,
+        elementImg,
+        order,
+        UserId: userId,
+      });
+
+      let tag = await Tag.findOne({
+        where: {
+          tagName: muscle,
+        },
+      });
+
+      if (!tag) {
+        tag = await Tag.create({
+          tagName: muscle,
+        });
+      }
+
+      const tagExistsInRoutine = await routine.hasTag(tag);
+
+      if (!tagExistsInRoutine) {
+        await routine.addTag(tag);
+      }
+
+      if (superset) {
+        await superset.addExercise(exercise);
+      } else {
+        await routine.addExercise(exercise);
+      }
+
+      return res.status(201).send(exercise);
+    } catch (error) {
+      res.status(422).send({
+        error: "Unprocessable Entity",
+        message: "There was a problem creating the Exercise",
+        details: `${error.message} at ${error.stack.split("\n")[1]}`,
+      });
     }
-
-    res.status(200).send(exercise);
-  } catch (error) {
-    res.status(422).send({
-      error: "Unprocessable Entity",
-      message: "There was a problem adding the Exercise",
-      details: error.message,
-    });
   }
-});
+);
+
+router.post(
+  "/addExercise/:exerciseId/:routineId/:supersetId?",
+  async (req, res) => {
+    const { exerciseId, routineId, supersetId } = req.params;
+    try {
+      const exercise = await Exercise.findByPk(exerciseId);
+
+      if (!exercise) {
+        return res.status(404).json({ message: "exercise not found" });
+      }
+
+      const routine = await Routine.findByPk(routineId);
+
+      if (!routine) {
+        return res
+          .status(404)
+          .json({ message: `Routine not found with ID ${routineId}` });
+      }
+
+      let superset;
+      if (supersetId) {
+        superset = await SuperSet.findByPk(supersetId);
+
+        if (!superset) {
+          return res
+            .status(404)
+            .json({ message: `Superset not found with ID ${supersetId}` });
+        }
+      }
+
+      const tag = await Tag.findOne({
+        where: {
+          tagName: exercise.muscle,
+        },
+      });
+
+      const tagExistsInRoutine = await routine.hasTag(tag);
+
+      if (!tagExistsInRoutine) {
+        await routine.addTag(tag);
+      }
+
+      if (superset) {
+        await superset.addExercise(exercise);
+      } else {
+        await routine.addExercise(exercise);
+      }
+
+      return res.status(201).send(exercise);
+    } catch (error) {
+      res.status(422).send({
+        error: "Unprocessable Entity",
+        message: "There was a problem adding the Exercise",
+        details: error.message,
+      });
+    }
+  }
+);
 
 router.patch("/editExercise/:exerciseId", async (req, res) => {
   const { exerciseId } = req.params;
