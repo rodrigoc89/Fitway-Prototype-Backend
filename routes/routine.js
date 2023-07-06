@@ -117,7 +117,7 @@ router.post("/newRoutine/:userId", async (req, res) => {
     const newRoutine = await Routine.create({
       name,
       selectDay,
-      creator: user.userName,
+      creator: user.username,
       public,
     });
 
