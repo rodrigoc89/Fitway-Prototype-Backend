@@ -202,7 +202,17 @@ router.patch("/editExercise/:exerciseId", async (req, res) => {
       return res.status(404).json({ message: "exercise not found" });
     }
 
-    const { name, reps, element, rest, muscle, series, description } = req.body;
+    const {
+      name,
+      reps,
+      element,
+      rest,
+      muscle,
+      series,
+      description,
+      muscleImg,
+      elementImg,
+    } = req.body;
 
     await exercise.update({
       name,
@@ -212,6 +222,8 @@ router.patch("/editExercise/:exerciseId", async (req, res) => {
       muscle,
       series,
       description,
+      muscleImg,
+      elementImg,
     });
 
     res.status(200).send(exercise);
