@@ -7,6 +7,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   const searchQuery = req.query.textSearch;
   try {
+    
     if (!searchQuery) {
       const result = await Routine.findAll({
         where: {
@@ -16,11 +17,12 @@ router.get("/", async (req, res) => {
 
       return res.status(200).send(result);
     }
+
     const result = await Routine.findAll({
       where: {
         public: true,
         [Op.or]: [
-          { id: { [Op.like]: searchQuery } },
+          { codeShare: { [Op.like]: searchQuery } },
           { name: { [Op.iLike]: searchQuery } },
           { creator: { [Op.iLike]: searchQuery } },
         ],

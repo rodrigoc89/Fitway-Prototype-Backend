@@ -361,7 +361,7 @@ ERROR {message: "There was a problem finding the routine"}
 
 ```
 
-- GET `/dataRoutine/:routineId`:routineId
+- GET `/dataRoutine/:routineId`
 
   ```
   Respuesta:
