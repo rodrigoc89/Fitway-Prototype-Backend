@@ -28,8 +28,8 @@ router.get("/", async (req, res) => {
         public: true,
         [Op.or]: [
           { codeShare: { [Op.like]: searchQuery } },
-          { name: { [Op.iLike]: searchQuery } },
-          { creator: { [Op.iLike]: searchQuery } },
+          { name: { [Op.iLike]: `%${searchQuery}%` } },
+          { creator: { [Op.iLike]: `%${searchQuery}%` } },
         ],
       },
       include: [
