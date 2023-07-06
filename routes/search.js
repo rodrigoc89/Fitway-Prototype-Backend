@@ -5,8 +5,9 @@ const { Op } = require("sequelize");
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const searchQuery = req.query.search;
+  const searchQuery = req.query.textSearch;
   try {
+    
     if (!searchQuery) {
       const result = await Routine.findAll({
         where: {
@@ -17,19 +18,13 @@ router.get("/", async (req, res) => {
       return res.status(200).send(result);
     }
 
-    const searchArray = Array.isArray(searchQuery)
-      ? searchQuery
-      : searchQuery.split(",");
-
-    const idValues = searchArray.filter((value) => !isNaN(value)).map(Number);
-
     const result = await Routine.findAll({
       where: {
         public: true,
         [Op.or]: [
-          { id: { [Op.in]: idValues } },
-          { name: { [Op.in]: searchArray } },
-          { creator: { [Op.in]: searchArray } },
+          { codeShare: { [Op.like]: searchQuery } },
+          { name: { [Op.iLike]: searchQuery } },
+          { creator: { [Op.iLike]: searchQuery } },
         ],
       },
     });

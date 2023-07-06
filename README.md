@@ -272,7 +272,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
 
   ```
   Parámetros de solicitud:
-  { email }
+  { codeShare }
   ```
 
   ```
@@ -315,21 +315,53 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem finding all routines"}
   ```
 
-- GET `/routine/`:routineId
+- GET `/:routineId`
 
   ```
+  Parámetros de solicitud:
+  { email }
+  ```
+
   Respuesta:
 
   {
-    "id":
-    "name": ""
-    "selectDay": ""
+  "id":
+  "name": ""
+  "selectDay": ""
   }
 
   ERROR {message: "There was a problem finding the routine"}
+
   ```
 
-- GET `/dataRoutine/:routineId`:routineId
+  ```
+
+- GET `/:codeShare`
+
+  ```
+  Parámetros de solicitud:
+  { codeShare }
+  ```
+
+  Respuesta:
+
+{
+"id": 1,
+"name": "PIERNA",
+"selectDay": "lunes",
+"creator": "1",
+"public": true,
+"codeShare": "c4ca4238",
+"Tags": []
+}
+
+ERROR {message: "There was a problem finding the routine"}
+
+```
+
+```
+
+- GET `/dataRoutine/:routineId`
 
   ```
   Respuesta:
@@ -414,6 +446,26 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR { message: "There was a problem creating Routine"}
   ```
 
+- POST `/addRoutine/:userId/:routineId`
+
+  ```
+  Parámetros de solicitud:
+  { userId, routineId }
+  ```
+
+  ```
+  Respuesta:
+
+  {
+    "id":
+    "name": ""
+    "selectDay": ""
+    "UserId":
+  }
+
+  ERROR { message: "There was a problem adding the Routine"}
+  ```
+
 - PATCH `/routine/updateRoutine/:routineId`
 
   ```
@@ -435,7 +487,10 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem updating the routine"}
   ```
 
-- DELETE `/routine/deleteRoutine/:routineId`
+- DELETE `/deleteRoutine/:userId/:routineId`
+
+  Parámetros de solicitud:
+  { routineId, userId }
 
   ```
   Respuesta:
@@ -520,12 +575,21 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {"There was a problem finding the exercise"}
   ```
 
-- POST `/newExercise/:userId/:parentId`
+- POST `/newExercise/:userId/:routineId/:supersetId?`
 
   ```
   Parámetros de solicitud:
   {
-    name, reps, element, rest, muscle, series, description, parent, order
+        name,
+        reps,
+        element,
+        rest,
+        muscle,
+        series,
+        description,
+        order,
+        muscleImg,
+        elementImg,
   }
   ```
 
@@ -541,6 +605,8 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
     "muscle": ""
     "series":
     "description": ""
+    "muscleImg":
+    "elementImg":
     "order":
     "UserId":
   }
@@ -548,11 +614,11 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem creating the Exercise"}
   ```
 
-- POST `/addExercise/:exerciseId/:parentId`
+- POST `/addExercise/:exerciseId/:routineId/:supersetId?`
 
   ```
   Parámetros de solicitud:
-  { parent }
+  { exerciseId, routineId, supersetId }
   ```
 
   ```
@@ -657,6 +723,57 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "There was a problem finding the superset"}
   ```
 
+- GET `/getExercises/:supersetId`
+
+  ```
+  Respuesta:
+
+  {
+        "id":
+        "order":
+        "rest":
+        "UserId":
+        "Exercises":
+        [
+          {
+            "id":
+            "name": ""
+            "reps": []
+            "element": ""
+            "rest":
+            "muscle": ""
+            "series":
+            "description": ""
+            "order":
+            "UserId":
+          }
+        ]
+    },
+    {
+        "id":
+        "order":
+        "rest":
+        "UserId":
+        "Exercises":
+        [
+          {
+            "id":
+            "name": ""
+            "reps": []
+            "element": ""
+            "rest":
+            "muscle": ""
+            "series":
+            "description": ""
+            "order":
+            "UserId":
+          }
+        ]
+    },
+
+  ERROR {message: "There was a problem finding exercises into the super set"}
+  ```
+
 - POST `/newSuperSet/:userId/:routineId"`
 
   ```
@@ -702,7 +819,7 @@ La API de Fitway Prototype Backend se basa en los siguientes endpoints:
   ERROR {message: "TThere was a problem removing the exercise of the super set"}
   ```
 
-- DELETE `/superset/deleteSuperset/:supersetId`
+- DELETE `/deleteSuperset/:supersetId`
 
   ```
   Respuesta:

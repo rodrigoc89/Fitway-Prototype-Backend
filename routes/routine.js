@@ -23,6 +23,28 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:codeShare", async (req, res) => {
+  const { codeShare } = req.params;
+  try {
+    const routines = await Routine.findOne({
+      where: { public: true, codeShare: codeShare },
+      include: [
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+      ],
+    });
+    res.status(200).send(routines);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the routine",
+      details: error.message,
+    });
+  }
+});
+
 router.get("/:routineId", async (req, res) => {
   const { routineId } = req.params;
   try {
@@ -90,15 +112,20 @@ router.post("/newRoutine/:userId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const { name, selectDay, public, creator } = req.body;
+    const { name, selectDay, public } = req.body;
 
     const newRoutine = await Routine.create({
       name,
       selectDay,
-      creator,
+      creator: userId,
       public,
     });
 
+    const shareCode = await newRoutine.generateShareCode(newRoutine.id);
+
+    newRoutine.codeShare = shareCode;
+
+    await newRoutine.save(newRoutine.codeShare);
     await user.addRoutine(newRoutine);
 
     res.status(201).send(newRoutine);
@@ -106,6 +133,31 @@ router.post("/newRoutine/:userId", async (req, res) => {
     res.status(422).send({
       error: "Unprocessable Entity",
       message: "There was a problem creating Routine",
+      details: error.message,
+    });
+  }
+});
+
+router.post("/addRoutine/:userId/:routineId", async (req, res) => {
+  const { userId, routineId } = req.params;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const routine = await Routine.findByPk(routineId);
+    if (!routine) {
+      return res.status(404).json({ message: "routine not found" });
+    }
+
+    await user.addRoutine(routine);
+
+    res.status(200).send(routine);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem adding the Routine",
       details: error.message,
     });
   }

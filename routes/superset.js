@@ -5,7 +5,12 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const superSets = await SuperSet.findAll();
+    const superSets = await SuperSet.findAll({
+      include: {
+        model: Exercise,
+        through: { attributes: [] },
+      },
+    });
 
     if (!superSets) {
       return res.status(404).json({ message: "super sets not found" });
@@ -23,9 +28,14 @@ router.get("/", async (req, res) => {
 
 router.get("/:supersetId", async (req, res) => {
   const { supersetId } = req.params;
-
+  console.log(supersetId);
   try {
-    const superSet = await SuperSet.findByPk(supersetId);
+    const superSet = await SuperSet.findByPk(supersetId, {
+      include: {
+        model: Exercise,
+        through: { attributes: [] },
+      },
+    });
 
     if (!superSet) {
       return res.status(404).json({ message: "super set not found" });
@@ -36,6 +46,21 @@ router.get("/:supersetId", async (req, res) => {
     res.status(422).send({
       error: "Unprocessable Entity",
       message: "There was a problem finding the super set",
+      details: error.message,
+    });
+  }
+});
+
+router.get("/getExercises/:supersetId", async (req, res) => {
+  const { supersetId } = req.params;
+  try {
+    const superSet = await SuperSet.findByPk(supersetId);
+    const exercises = await superSet.getExercises();
+    res.status(200).send(exercises);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding exercises into the super set",
       details: error.message,
     });
   }
