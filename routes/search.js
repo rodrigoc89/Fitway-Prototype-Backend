@@ -7,12 +7,17 @@ const router = Router();
 router.get("/", async (req, res) => {
   const searchQuery = req.query.textSearch;
   try {
-    
     if (!searchQuery) {
       const result = await Routine.findAll({
         where: {
           public: true,
         },
+        include: [
+          {
+            model: Tag,
+            through: { attributes: [] },
+          },
+        ],
       });
 
       return res.status(200).send(result);
@@ -27,6 +32,12 @@ router.get("/", async (req, res) => {
           { creator: { [Op.iLike]: searchQuery } },
         ],
       },
+      include: [
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+      ],
     });
     res.status(200).send(result);
   } catch (error) {
