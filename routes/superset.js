@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User, Routine, SuperSet, Exercise } = require("../model");
+const { User, Routine, SuperSet, Exercise, Tag } = require("../model");
 
 const router = Router();
 
@@ -77,17 +77,17 @@ router.post("/newSuperSet/:userId/:routineId", async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    const newSuperset = await SuperSet.create({
-      UserId: userId,
-      order,
-      quantity,
-    });
-
     const routine = await Routine.findByPk(routineId);
 
     if (!routine) {
       return res.status(404).json({ message: "routine not found" });
     }
+
+    const newSuperset = await SuperSet.create({
+      UserId: userId,
+      order,
+      quantity,
+    });
 
     await routine.addSuperSet(newSuperset);
 
@@ -128,35 +128,69 @@ router.post("/addSuperSet/:superSetId/:routineId", async (req, res) => {
   }
 });
 
-router.delete("/removeExercise/:superSetId/:exerciseId", async (req, res) => {
-  const { exerciseId, superSetId } = req.params;
+router.delete(
+  "/removeExercise/:routineId/:superSetId/:exerciseId",
+  async (req, res) => {
+    const { exerciseId, superSetId, routineId } = req.params;
 
-  try {
-    const superSet = await SuperSet.findByPk(superSetId);
+    try {
+      const [routine, superSet, exercise] = await Promise.all([
+        Routine.findByPk(routineId),
+        SuperSet.findByPk(superSetId),
+        Exercise.findByPk(exerciseId),
+      ]);
 
-    if (!superSet) {
-      return res.status(404).json({ message: "super set not found" });
+      if (!routine) {
+        return res.status(404).json({ message: "routine not found" });
+      }
+      if (!superSet) {
+        return res.status(404).json({ message: "superset not found" });
+      }
+      if (!exercise) {
+        return res.status(404).json({ message: "exercise not found" });
+      }
+
+      await superSet.removeExercises(exercise);
+
+      const exerciseCountInRoutine = await routine.countExercises({
+        where: {
+          muscle: exercise.muscle,
+        },
+      });
+
+      const exerciseCountInSuperSets = await superSet.countExercises({
+        where: {
+          muscle: exercise.muscle,
+        },
+      });
+
+      const totalExerciseCount =
+        exerciseCountInRoutine + exerciseCountInSuperSets;
+
+      if (totalExerciseCount === 0) {
+        const tagToRemove = await Tag.findOne({
+          where: {
+            tagName: exercise.muscle,
+          },
+        });
+
+        if (tagToRemove) {
+          await routine.removeTag(tagToRemove);
+        }
+      }
+
+      res
+        .status(200)
+        .send({ message: "The exercise has been removed from the super set" });
+    } catch (error) {
+      res.status(422).send({
+        error: "Unprocessable Entity",
+        message: "There was a problem deleting the exercise from the super set",
+        details: error.message,
+      });
     }
-
-    const exercise = await Exercise.findByPk(exerciseId);
-
-    if (!exercise) {
-      return res.status(404).json({ message: "exercise not found" });
-    }
-
-    await superSet.removeExercise(exercise);
-
-    res
-      .status(200)
-      .send({ message: "The exercise has been removed from the super set" });
-  } catch (error) {
-    res.status(422).send({
-      error: "Unprocessable Entity",
-      message: "There was a problem deleting the exercise from the super set",
-      details: error.message,
-    });
   }
-});
+);
 
 router.delete("/deleteSuperset/:supersetId", async (req, res) => {
   const { supersetId } = req.params;
@@ -166,7 +200,6 @@ router.delete("/deleteSuperset/:supersetId", async (req, res) => {
     const exercises = await superSet.getExercises();
 
     if (exercises.length !== 0) {
-      // return res.status(404).json({ message: "exercises not found" });
       await superSet.removeExercises(exercises);
     }
 

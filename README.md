@@ -809,7 +809,7 @@ ERROR {message: "There was a problem finding the routine"}
   ERROR {message: "There was a problem creating superset"}
   ```
 
-- DELETE `/removeExercise/:routineId/:exerciseId`
+- DELETE `/removeExercise/:routineId/:superSetId/:exerciseId`
 
   ```
   Respuesta:

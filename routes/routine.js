@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:codeShare", async (req, res) => {
+router.get("/shareRoutine/:codeShare", async (req, res) => {
   const { codeShare } = req.params;
   try {
     const routines = await Routine.findOne({
@@ -56,6 +56,11 @@ router.get("/:routineId", async (req, res) => {
         },
       ],
     });
+
+    if (!routine) {
+      return res.status(404).json({ message: "Routine not found" });
+    }
+
     res.status(200).send(routine);
   } catch (error) {
     res.status(422).send({
@@ -84,6 +89,10 @@ router.get("/dataRoutine/:routineId", async (req, res) => {
             model: Exercise,
             through: { attributes: [] },
           },
+        },
+        {
+          model: Tag,
+          through: { attributes: [] },
         },
       ],
     });
@@ -240,8 +249,41 @@ router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
       return res.status(404).json({ message: "exercise not found" });
     }
 
-    await routine.removeExercise(exercise);
+    await routine.removeExercises(exercise);
 
+    const exerciseCountInRoutine = await routine.countExercises({
+      where: {
+        muscle: exercise.muscle,
+      },
+    });
+
+    const superSets = await routine.getSuperSets({
+      include: [
+        {
+          model: Exercise,
+        },
+      ],
+    });
+    let exerciseCountInSuperSets = 0;
+    for (const superset of superSets) {
+      const exercises = superset.Exercises;
+      exerciseCountInSuperSets = exercises.length;
+    }
+
+    const totalExerciseCount =
+      exerciseCountInRoutine + exerciseCountInSuperSets;
+
+    if (totalExerciseCount === 0) {
+      const tagToRemove = await Tag.findOne({
+        where: {
+          tagName: exercise.muscle,
+        },
+      });
+
+      if (tagToRemove) {
+        await routine.removeTag(tagToRemove);
+      }
+    }
     res
       .status(200)
       .json({ message: "The exercise has been removed from the Routine" });
@@ -249,7 +291,7 @@ router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
     res.status(422).send({
       error: "Unprocessable Entity",
       message: "There was a problem deleting the exercise from the Routine",
-      details: error.message,
+      details: `${error.message} at ${error.stack.split("\n")[1]}`,
     });
   }
 });
