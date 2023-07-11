@@ -152,17 +152,32 @@ router.delete(
 
       await superSet.removeExercises(exercise);
 
+      const muscle = exercise.muscle;
+
       const exerciseCountInRoutine = await routine.countExercises({
         where: {
           muscle: exercise.muscle,
         },
       });
 
-      const exerciseCountInSuperSets = await superSet.countExercises({
-        where: {
-          muscle: exercise.muscle,
-        },
+      const superSets = await routine.getSuperSets({
+        include: [
+          {
+            model: Exercise,
+          },
+        ],
       });
+
+      let exerciseCountInSuperSets = 0;
+      for (const superset of superSets) {
+        const superSetId = superset.id;
+        const superSet = await SuperSet.findByPk(superSetId, {
+          include: { model: Exercise },
+        });
+        const exercises = superSet.Exercises;
+        const filteredExercises = exercises.filter((e) => e.muscle === muscle);
+        exerciseCountInSuperSets += filteredExercises.length;
+      }
 
       const totalExerciseCount =
         exerciseCountInRoutine + exerciseCountInSuperSets;
@@ -192,15 +207,49 @@ router.delete(
   }
 );
 
-router.delete("/deleteSuperset/:supersetId", async (req, res) => {
-  const { supersetId } = req.params;
+router.delete("/deleteSuperset/:routineId/:supersetId", async (req, res) => {
+  const { routineId, supersetId } = req.params;
   try {
+    const routine = await Routine.findByPk(routineId);
     const superSet = await SuperSet.findByPk(supersetId);
 
-    const exercises = await superSet.getExercises();
+    if (!routine) {
+      return res.status(404).json({ message: "routine not found" });
+    }
+    if (!superSet) {
+      return res.status(404).json({ message: "superSet not found" });
+    }
 
-    if (exercises.length !== 0) {
-      await superSet.removeExercises(exercises);
+    const exercisesInSuperset = await superSet.getExercises();
+    const exercisesInRoutine = await routine.getExercises();
+
+    const mismatchedExercise = exercisesInSuperset.find((exercise1) => {
+      return !exercisesInRoutine.some(
+        (exercise2) => exercise2.muscle === exercise1.muscle
+      );
+    });
+
+    if (exercisesInSuperset.length !== 0) {
+      await superSet.removeExercises(exercisesInSuperset);
+    }
+
+    if (mismatchedExercise) {
+      for (const exercise of exercisesInSuperset) {
+        const muscle = exercise.muscle;
+        const isInRoutine = exercisesInRoutine.some(
+          (routineExercise) => routineExercise.muscle === muscle
+        );
+        if (!isInRoutine) {
+          const tagToRemove = await Tag.findOne({
+            where: {
+              tagName: muscle,
+            },
+          });
+          if (tagToRemove) {
+            await routine.removeTag(tagToRemove);
+          }
+        }
+      }
     }
 
     await SuperSet.destroy({ where: { id: supersetId } });

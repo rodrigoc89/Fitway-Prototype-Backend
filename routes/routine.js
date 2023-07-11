@@ -97,11 +97,35 @@ router.get("/dataRoutine/:routineId", async (req, res) => {
       ],
     });
 
+    const superSets = await dataRoutine.getSuperSets({
+      include: [
+        {
+          model: Exercise,
+        },
+      ],
+    });
+    const x = dataRoutine.Exercises;
+    let countExercises = 0;
+    for (const superset of superSets) {
+      const superSetId = superset.id;
+      const superSet = await SuperSet.findByPk(superSetId, {
+        include: { model: Exercise },
+      });
+      const exercises = superSet.Exercises;
+      countExercises += exercises.length;
+    }
+    const exerciseCount = countExercises + x.length;
+
     if (!dataRoutine) {
       return res.status(404).json({ message: "Routine not found" });
     }
 
-    res.status(200).send(dataRoutine);
+    const responseData = {
+      ...dataRoutine.toJSON(),
+      exerciseCount: exerciseCount,
+    };
+
+    res.status(200).send(responseData);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
@@ -251,6 +275,8 @@ router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
 
     await routine.removeExercises(exercise);
 
+    const muscle = exercise.muscle;
+
     const exerciseCountInRoutine = await routine.countExercises({
       where: {
         muscle: exercise.muscle,
@@ -264,10 +290,16 @@ router.delete("/removeExercise/:routineId/:exerciseId", async (req, res) => {
         },
       ],
     });
+
     let exerciseCountInSuperSets = 0;
     for (const superset of superSets) {
-      const exercises = superset.Exercises;
-      exerciseCountInSuperSets = exercises.length;
+      const superSetId = superset.id;
+      const superSet = await SuperSet.findByPk(superSetId, {
+        include: { model: Exercise },
+      });
+      const exercises = superSet.Exercises;
+      const filteredExercises = exercises.filter((e) => e.muscle === muscle);
+      exerciseCountInSuperSets += filteredExercises.length;
     }
 
     const totalExerciseCount =

@@ -819,7 +819,7 @@ ERROR {message: "There was a problem finding the routine"}
   ERROR {message: "TThere was a problem removing the exercise of the super set"}
   ```
 
-- DELETE `/deleteSuperset/:supersetId`
+- DELETE `/deleteSuperset/:routineId/:supersetId`
 
   ```
   Respuesta:
