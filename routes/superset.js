@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { User, Routine, SuperSet, Exercise, Tag } = require("../model");
+const { Op, where } = require("sequelize");
 
 const router = Router();
 
@@ -170,11 +171,7 @@ router.delete(
 
       let exerciseCountInSuperSets = 0;
       for (const superset of superSets) {
-        const superSetId = superset.id;
-        const superSet = await SuperSet.findByPk(superSetId, {
-          include: { model: Exercise },
-        });
-        const exercises = superSet.Exercises;
+        const exercises = superset.Exercises;
         const filteredExercises = exercises.filter((e) => e.muscle === muscle);
         exerciseCountInSuperSets += filteredExercises.length;
       }
@@ -220,35 +217,45 @@ router.delete("/deleteSuperset/:routineId/:supersetId", async (req, res) => {
       return res.status(404).json({ message: "superSet not found" });
     }
 
-    const exercisesInSuperset = await superSet.getExercises();
     const exercisesInRoutine = await routine.getExercises();
-
-    const mismatchedExercise = exercisesInSuperset.find((exercise1) => {
-      return !exercisesInRoutine.some(
-        (exercise2) => exercise2.muscle === exercise1.muscle
-      );
+    const exercisesInSuperset = await superSet.getExercises();
+    const otherSupersets = await routine.getSuperSets({
+      where: {
+        id: {
+          [Op.ne]: supersetId,
+        },
+      },
+      include: [
+        {
+          model: Exercise,
+        },
+      ],
     });
 
-    if (exercisesInSuperset.length !== 0) {
-      await superSet.removeExercises(exercisesInSuperset);
-    }
+    const exercisesInOtherSupersets = otherSupersets.flatMap(
+      (superset) => superset.Exercises
+    );
 
-    if (mismatchedExercise) {
-      for (const exercise of exercisesInSuperset) {
-        const muscle = exercise.muscle;
-        const isInRoutine = exercisesInRoutine.some(
-          (routineExercise) => routineExercise.muscle === muscle
-        );
-        if (!isInRoutine) {
-          const tagToRemove = await Tag.findOne({
-            where: {
-              tagName: muscle,
-            },
-          });
-          if (tagToRemove) {
-            await routine.removeTag(tagToRemove);
-          }
-        }
+    const otherExercises = [
+      ...exercisesInRoutine,
+      ...exercisesInOtherSupersets,
+    ];
+
+    const musclesInSupersetTarget = [
+      ...new Set(exercisesInSuperset.map((exercise) => exercise.muscle)),
+    ];
+
+    for (const muscle of musclesInSupersetTarget) {
+      const matchingExercises = otherExercises.filter(
+        (e) => e.muscle === muscle
+      );
+      if (matchingExercises.length === 0) {
+        const tagToRemove = await Tag.findOne({
+          where: {
+            tagName: muscle,
+          },
+        });
+        await routine.removeTag(tagToRemove);
       }
     }
 
