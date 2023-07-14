@@ -1,8 +1,7 @@
 const { generateToken, validateToken } = require("../config/token");
-const { passwordValidator } = require("../middleware/passwordStrong");
 
 const userRepository = require("../repositories/userRepository");
-const { User, Tag, Exercise, SuperSet } = require("../model");
+const { User, Tag } = require("../model");
 
 const login = async (userLogin, password) => {
   const user = await userRepository.findByEmailOrUsername(userLogin);
@@ -65,6 +64,9 @@ const validateEmail = async (email) => {
 
 const getUser = async (userId) => {
   const user = await userRepository.findById(userId);
+  if (!user) {
+    throw new Error("user not found");
+  }
   return user;
 };
 

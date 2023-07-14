@@ -1,4 +1,4 @@
-const authService = require("../services/authService");
+const userService = require("../services/userService");
 const { passwordValidator } = require("../middleware/passwordStrong");
 
 const register = async (req, res) => {
@@ -6,7 +6,7 @@ const register = async (req, res) => {
     req.body;
   try {
     passwordValidator(req, res, async () => {
-      const token = await authService.register(
+      const token = await userService.register(
         name,
         lastName,
         birthdate,
@@ -30,7 +30,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { userLogin, password } = req.body;
   try {
-    const token = await authService.login(userLogin, password);
+    const token = await userService.login(userLogin, password);
     res.cookie("token", token).send(token);
   } catch (error) {
     res.status(422).send({
@@ -44,7 +44,7 @@ const login = async (req, res) => {
 const validateEmail = async (req, res) => {
   const { email } = req.body;
   try {
-    const isEmailAvailable = await authService.validateEmail(email);
+    const isEmailAvailable = await userService.validateEmail(email);
 
     if (!isEmailAvailable) {
       return res.status(409).send({
@@ -67,7 +67,7 @@ const validateEmail = async (req, res) => {
 const getUserById = async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await authService.getUser(userId);
+    const user = await userService.getUser(userId);
     if (!user) {
       return res.status(404).send({
         message: "User not found",
@@ -86,7 +86,7 @@ const getUserById = async (req, res) => {
 const getDataToken = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const userData = await authService.getData(token);
+    const userData = await userService.getData(token);
     res.send(userData);
   } catch (error) {
     res.status(422).send({
@@ -100,7 +100,7 @@ const getDataToken = async (req, res) => {
 const getUserRoutines = async (req, res) => {
   const { userId } = req.params;
   try {
-    const routines = await authService.getRoutines(userId);
+    const routines = await userService.getRoutines(userId);
     res.status(200).send(routines);
   } catch (error) {
     res.status(422).send({
@@ -114,7 +114,7 @@ const getUserRoutines = async (req, res) => {
 const getUserExercises = async (req, res) => {
   const { userId } = req.params;
   try {
-    const exercises = await authService.getExercises(userId);
+    const exercises = await userService.getExercises(userId);
     res.status(200).send(exercises);
   } catch (error) {
     res.status(422).send({
@@ -129,7 +129,7 @@ const editUserProfile = async (req, res) => {
   const { userId } = req.params;
   try {
     const { country, birthdate, lastName, name, username } = req.body;
-    const user = await authService.editProfile(
+    const user = await userService.editProfile(
       userId,
       country,
       birthdate,
@@ -151,7 +151,7 @@ const editUserProfile = async (req, res) => {
 const getUserSuperSets = async (req, res) => {
   const { userId } = req.params;
   try {
-    const superSets = await authService.getSuperSets(userId);
+    const superSets = await userService.getSuperSets(userId);
     if (superSets === []) {
       return "no hay rutinas";
     }
