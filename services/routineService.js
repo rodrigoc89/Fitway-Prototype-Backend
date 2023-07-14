@@ -66,8 +66,6 @@ const createRoutine = async (userId, name, selectDay, public) => {
     throw new Error("User not found");
   }
 
-  //   const { name, selectDay, public } = routineData;
-
   const newRoutine = await routineRepository.create({
     name,
     selectDay,
