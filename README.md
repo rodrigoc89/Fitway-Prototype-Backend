@@ -1,6 +1,6 @@
 # Fitway Prototype Backend
 
-<div style="text-align:center"><img src ="![alt](image.png)" /></div>
+![Alt text](image.png)
 
 Fitway Prototype Backend es una aplicación de backend desarrollada para el proyecto Fitway. Proporciona una API para gestionar rutinas de ejercicios, ejercicios y superseries.
 
