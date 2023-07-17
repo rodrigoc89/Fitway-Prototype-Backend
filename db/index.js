@@ -9,6 +9,12 @@ const dbConfig = {
   db_dialect: process.env.DB_DIALECT || "postgres",
   db_port: process.env.PORT,
   logging: false,
+  pool: {
+    max: 10,
+    min: 0,
+    idle: 10000,
+    acquire: 30000,
+  },
 };
 
 const db = new Sequelize(
@@ -20,6 +26,7 @@ const db = new Sequelize(
     dialect: dbConfig.db_dialect,
     logging: dbConfig.logging,
     port: dbConfig.db_port,
+    pool: dbConfig.pool,
   }
 );
 
