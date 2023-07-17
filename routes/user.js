@@ -13,19 +13,19 @@ const { route } = require("./search");
 // REQUEST USER INFORMATION
 
 router.get("/", async (req, res) => {
-  try {
-    const users = await User.findAll({
-      attributes: { exclude: ["password", "salt"] },
-    });
+    try {
+        const users = await User.findAll({
+            attributes: { exclude: ["password", "salt"] },
+        });
 
-    res.status(200).send(users);
-  } catch (error) {
-    res.status(422).send({
-      error: "Unprocessable Entity",
-      message: "There was a problem finding all users",
-      details: error.message,
-    });
-  }
+        res.status(200).send(users);
+    } catch (error) {
+        res.status(422).send({
+            error: "Unprocessable Entity",
+            message: "There was a problem finding all users",
+            details: error.message,
+        });
+    }
 });
 
 // router.get("/:userId", async (req, res) => {
@@ -76,34 +76,38 @@ router.get("/:userId", userController.getUserById);
 // });
 router.get("/data/token", userController.getDataToken);
 
-// router.get("/routines/:userId", async (req, res) => {
-//   const { userId } = req.params;
-//   try {
-//     const user = await User.findByPk(userId);
+router.get("/routines/:userId", async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findByPk(userId);
 
-//     if (!user) {
-//       return res.status(404).send({ message: "User not found" });
-//     }
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
 
-//     const routines = await user.getRoutines({
-//       include: [
-//         { model: User, through: { where: { UserId: userId } }, attributes: [] },
-//         {
-//           model: Tag,
-//           through: { attributes: [] },
-//         },
-//       ],
-//     });
+        const routines = await user.getRoutines({
+            include: [
+                {
+                    model: User,
+                    through: { where: { UserId: userId } },
+                    attributes: [],
+                },
+                {
+                    model: Tag,
+                    through: { attributes: [] },
+                },
+            ],
+        });
 
-//     res.status(200).send(routines);
-//   } catch (error) {
-//     res.status(422).send({
-//       error: "Unprocessable Entity",
-//       message: "There was a problem finding the user routines",
-//       details: error.message,
-//     });
-//   }
-// });
+        res.status(200).send(routines);
+    } catch (error) {
+        res.status(422).send({
+            error: "Unprocessable Entity",
+            message: "There was a problem finding the user routines",
+            details: error.message,
+        });
+    }
+});
 router.get("/routines/:userId", userController.getUserRoutines);
 
 // router.get("/exercises/:userId", async (req, res) => {
@@ -174,63 +178,63 @@ router.get("/superSets/:userId", userController.getUserSuperSets);
 router.patch("/editProfile/:userId", userController.editUserProfile);
 // VALIDATE EMAIL
 router.post("/emailValidate", userController.validateEmail);
-// router.post("/emailValidate", async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     const user = await User.findOne({ where: { email: email } });
+router.post("/emailValidate", async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ where: { email: email } });
 
-//     if (user) {
-//       return res.status(409).send({
-//         message: "the email already exists",
-//       });
-//     }
+        if (user) {
+            return res.status(409).send({
+                message: "the email already exists",
+            });
+        }
 
-//     res.status(200).send({
-//       message: "Email is available for registration.",
-//     });
-//   } catch (error) {
-//     res.status(422).send({
-//       error: "Unprocessable Entity",
-//       message: "There was a problem checking the email",
-//       details: error.message,
-//     });
-//   }
-// });
+        res.status(200).send({
+            message: "Email is available for registration.",
+        });
+    } catch (error) {
+        res.status(422).send({
+            error: "Unprocessable Entity",
+            message: "There was a problem checking the email",
+            details: error.message,
+        });
+    }
+});
 
 // REGISTER
 router.post("/register", userController.register);
-// router.post("/register", passwordValidator, async (req, res) => {
-//   const { name, lastName, birthdate, password, email, country, username } =
-//     req.body;
-//   try {
-//     const newUser = await User.create({
-//       name,
-//       lastName,
-//       birthdate,
-//       password,
-//       email,
-//       country,
-//       username,
-//     });
+router.post("/register", passwordValidator, async (req, res) => {
+    const { name, lastName, birthdate, password, email, country, username } =
+        req.body;
+    try {
+        const newUser = await User.create({
+            name,
+            lastName,
+            birthdate,
+            password,
+            email,
+            country,
+            username,
+        });
 
-//     const payload = {
-//       id: newUser.id,
-//       email: newUser.email,
-//       username: newUser.username,
-//     };
+        const payload = {
+            id: newUser.id,
+            email: newUser.email,
+            username: newUser.username,
+        };
 
-//     const token = generateToken(payload);
+        const token = generateToken(payload);
 
-//     res.cookie("token", token);
-//     res.status(201).send(token);
-//   } catch (error) {
-//     res.status(422).send({
-//       error: "Unprocessable Entity",
-//       message: "There was a problem creating the user",
-//       details: error.message,
-//     });
-//   }
-// });
+        res.cookie("token", token);
+        res.status(201).send(token);
+    } catch (error) {
+        res.status(422).send({
+            error: "Unprocessable Entity",
+            message: "There was a problem creating the user",
+            details: error.message,
+        });
+    }
+});
 
 //LOGIN
 router.post("/login", userController.login);
@@ -278,13 +282,13 @@ router.post("/login", userController.login);
 //LOGOUT
 
 router.post("/logout", (req, res) => {
-  try {
-    res.clearCookie("token");
-    res.sendStatus(200);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
+    try {
+        res.clearCookie("token");
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
 });
 
 module.exports = router;
