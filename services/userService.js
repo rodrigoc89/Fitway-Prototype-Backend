@@ -58,8 +58,9 @@ const register = async (
 };
 
 const validateEmail = async (email) => {
-  const user = userRepository.validateEmail(email);
-  return !user;
+  const user = await userRepository.validateEmail(email);
+
+  return user;
 };
 
 const getUser = async (userId) => {
@@ -86,6 +87,7 @@ const getData = async (token) => {
     birthdate: user.birthdate,
     country: user.country,
     email: user.email,
+    username: user.username,
   };
 };
 

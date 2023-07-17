@@ -1,4 +1,4 @@
-const { User, Routine, Tag, Exercise, SuperSet } = require("../model");
+const { Routine, Tag, Exercise, SuperSet } = require("../model");
 
 const findByCode = async (codeShare) => {
   return await Routine.findOne({
@@ -42,7 +42,6 @@ const getData = async (routineId) => {
 };
 
 const create = async (routineData) => {
-  console.log(routineData);
   return await Routine.create(routineData);
 };
 

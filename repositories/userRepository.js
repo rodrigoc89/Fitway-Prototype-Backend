@@ -1,4 +1,4 @@
-const { User, Routine, Exercise, SuperSet, Tag } = require("../model");
+const { User, Exercise, SuperSet } = require("../model");
 const { Op } = require("sequelize");
 
 const findByEmailOrUsername = async (userLogin) => {

@@ -42,11 +42,11 @@ const login = async (req, res) => {
 };
 
 const validateEmail = async (req, res) => {
-  const { email } = req.body;
   try {
+    const { email } = req.body;
     const isEmailAvailable = await userService.validateEmail(email);
 
-    if (!isEmailAvailable) {
+    if (isEmailAvailable) {
       return res.status(409).send({
         message: "The email already exists",
       });

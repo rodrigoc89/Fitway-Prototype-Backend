@@ -1,8 +1,7 @@
 const routineRepository = require("../repositories/routineRepository");
 const userRepository = require("../repositories/userRepository");
 
-const { Exercise, SuperSet, User, Tag } = require("../model");
-const { where } = require("sequelize");
+const { Exercise, SuperSet, Tag } = require("../model");
 
 const share = async (codeShare) => {
   const routine = await routineRepository.findByCode(codeShare);
@@ -19,44 +18,9 @@ const getRoutine = async (routineId) => {
 };
 
 const getData = async (routineId) => {
-  const dataRoutine = await routineRepository.getData(routineId, {
-    include: [
-      {
-        model: Tag,
-        through: { attributes: [] },
-      },
-    ],
-  });
-  const superSets = await dataRoutine.getSuperSets({
-    include: [
-      {
-        model: Exercise,
-      },
-    ],
-  });
+  const dataRoutine = await routineRepository.getData(routineId);
 
-  const x = dataRoutine.Exercises;
-  let countExercises = 0;
-  for (const superset of superSets) {
-    const superSetId = superset.id;
-    const superSet = await SuperSet.findByPk(superSetId, {
-      include: { model: Exercise },
-    });
-    const exercises = superSet.Exercises;
-    countExercises += exercises.length;
-  }
-  const exerciseCount = countExercises + x.length;
-
-  if (!dataRoutine) {
-    throw new Error("Routine not found");
-  }
-
-  const responseData = {
-    ...dataRoutine.toJSON(),
-    exerciseCount: exerciseCount,
-  };
-
-  return responseData;
+  return dataRoutine;
 };
 
 const createRoutine = async (userId, name, selectDay, public) => {
