@@ -1,8 +1,7 @@
 const routineRepository = require("../repositories/routineRepository");
 const userRepository = require("../repositories/userRepository");
 
-const { Exercise, SuperSet, User, Tag } = require("../model");
-const { where } = require("sequelize");
+const { Exercise, SuperSet, Tag } = require("../model");
 
 const share = async (codeShare) => {
   const routine = await routineRepository.findByCode(codeShare);
