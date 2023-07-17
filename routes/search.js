@@ -1,5 +1,5 @@
 const Router = require("express");
-const { User, Routine, Exercise, SuperSet, Tag } = require("../model");
+const { Routine, Exercise, SuperSet, Tag } = require("../model");
 const { Op } = require("sequelize");
 
 const router = Router();
@@ -7,22 +7,6 @@ const router = Router();
 router.get("/", async (req, res) => {
   const searchQuery = req.query.textSearch;
   try {
-    if (!searchQuery) {
-      const result = await Routine.findAll({
-        where: {
-          public: true,
-        },
-        include: [
-          {
-            model: Tag,
-            through: { attributes: [] },
-          },
-        ],
-      });
-
-      return res.status(200).send(result);
-    }
-
     const result = await Routine.findAll({
       where: {
         public: true,
@@ -37,9 +21,34 @@ router.get("/", async (req, res) => {
           model: Tag,
           through: { attributes: [] },
         },
+        {
+          model: Exercise,
+          through: { attributes: [] },
+          include: [
+            {
+              model: SuperSet,
+
+              through: { attributes: [] },
+            },
+          ],
+        },
       ],
     });
-    res.status(200).send(result);
+
+    const resultWithExerciseCount = result.map((routine) => {
+      const exerciseCount =
+        routine.Exercises.length +
+        routine.Exercises.reduce(
+          (acc, exercise) => acc + exercise.SuperSets.length,
+          0
+        );
+      return {
+        ...routine.toJSON(),
+        exerciseCount,
+      };
+    });
+
+    res.status(200).send(resultWithExerciseCount);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",
