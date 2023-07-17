@@ -201,7 +201,7 @@ router.post("/emailValidate", async (req, res) => {
     }
 });
 
- REGISTER
+ //REGISTER
 router.post("/register", userController.register);
 router.post("/register", passwordValidator, async (req, res) => {
     const { name, lastName, birthdate, password, email, country, username } =
@@ -236,7 +236,7 @@ router.post("/register", passwordValidator, async (req, res) => {
     }
 });
 
-LOGIN
+//LOGIN
 router.post("/login", userController.login);
  router.post("/login", async (req, res) => {
    const { userLogin, password } = req.body;
@@ -279,7 +279,7 @@ router.post("/login", userController.login);
    }
  });
 
-LOGOUT
+//LOGOUT
 
 router.post("/logout", (req, res) => {
     try {
