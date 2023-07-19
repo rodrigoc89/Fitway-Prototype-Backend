@@ -115,7 +115,7 @@ const deleteRoutine = async (req, res) => {
 const removeExercise = async (req, res) => {
   const { exerciseId, routineId } = req.params;
   try {
-    await routineService.remove(exerciseId, routineId);
+    await routineService.removeE(exerciseId, routineId);
     res
       .status(200)
       .json({ message: "The exercise has been removed from the Routine" });

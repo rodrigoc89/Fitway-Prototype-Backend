@@ -5,11 +5,15 @@ const { Exercise, SuperSet, Tag } = require("../model");
 
 const share = async (codeShare) => {
   const routine = await routineRepository.findByCode(codeShare);
+  if (!routine) {
+    throw new Error("Routine not found");
+  }
   return routine;
 };
 
 const getRoutine = async (routineId) => {
   const routine = await routineRepository.findById(routineId);
+
   if (!routine) {
     throw new Error("Routine not found");
   }
@@ -19,7 +23,9 @@ const getRoutine = async (routineId) => {
 
 const getData = async (routineId) => {
   const dataRoutine = await routineRepository.getData(routineId);
-
+  if (!dataRoutine) {
+    throw new Error("Routine not found");
+  }
   return dataRoutine;
 };
 
@@ -83,24 +89,24 @@ const deleted = async (userId, routineId) => {
     throw new Error("Routine not found");
   }
 
-  const exercises = await routine.getExercises();
-  const superSets = await routine.getSuperSets();
+  if (user.username === routine.creator && !routine.public) {
+    const exercises = await routine.getExercises();
+    const superSets = await routine.getSuperSets();
 
-  for (const superSet of superSets) {
-    await superSet.removeExercises(exercises);
-    await superSet.destroy();
-  }
+    for (const superSet of superSets) {
+      await superSet.removeExercises(exercises);
+      await superSet.destroy();
+    }
 
-  await routine.removeExercises(exercises);
-  await routine.removeSuperSets(superSets);
-
-  if (!routine.public) {
+    await routine.removeExercises(exercises);
+    await routine.removeSuperSets(superSets);
     await routineRepository.eliminate(routineId);
+  } else {
+    await user.removeRoutine(routine);
   }
-  await routine.removeUser(user);
 };
 
-const remove = async (exerciseId, routineId) => {
+const removeE = async (exerciseId, routineId) => {
   const routine = await routineRepository.findById(routineId);
   const exercise = await Exercise.findByPk(exerciseId);
 
@@ -164,5 +170,5 @@ module.exports = {
   addRoutine,
   update,
   deleted,
-  remove,
+  removeE,
 };
