@@ -1,23 +1,21 @@
 const userService = require("../services/userService");
-const { passwordValidator } = require("../middleware/passwordStrong");
 
 const register = async (req, res) => {
-  const { name, lastName, birthdate, password, email, country, username } =
-    req.body;
   try {
-    passwordValidator(req, res, async () => {
-      const token = await userService.register(
-        name,
-        lastName,
-        birthdate,
-        password,
-        email,
-        country,
-        username
-      );
-      res.cookie("token", token);
-      res.status(201).send(token);
-    });
+    const { name, lastName, birthdate, password, email, country, username } =
+      req.body;
+
+    const token = await userService.register(
+      name,
+      lastName,
+      birthdate,
+      password,
+      email,
+      country,
+      username
+    );
+    res.cookie("token", token);
+    res.status(201).send(token);
   } catch (error) {
     res.status(422).send({
       error: "Unprocessable Entity",

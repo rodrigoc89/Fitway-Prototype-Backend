@@ -1,8 +1,10 @@
 const Router = require("express");
 
-const router = Router();
+const { passwordValidator } = require("../middleware/passwordStrong");
 
 const userController = require("../controllers/userController");
+
+const router = Router();
 
 // REQUEST USER INFORMATION
 
@@ -28,7 +30,7 @@ router.patch("/editProfile/:userId", userController.editUserProfile);
 router.post("/emailValidate", userController.validateEmail);
 
 // POST register user
-router.post("/register", userController.register);
+router.post("/register", passwordValidator, userController.register);
 
 //POST login user
 router.post("/login", userController.login);
