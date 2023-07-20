@@ -1,19 +1,5 @@
 const routineService = require("../services/routineService");
 
-const shareRoutine = async (req, res) => {
-  const { codeShare } = req.params;
-  try {
-    const routine = routineService.share(codeShare);
-    res.status(200).send(routine);
-  } catch (error) {
-    res.status(422).send({
-      error: "Unprocessable Entity",
-      message: "There was a problem finding the routine",
-      details: error.message,
-    });
-  }
-};
-
 const getRoutineById = async (req, res) => {
   const { routineId } = req.params;
   try {
@@ -129,7 +115,6 @@ const removeExercise = async (req, res) => {
 };
 
 module.exports = {
-  shareRoutine,
   getRoutineById,
   getDataRoutine,
   newRoutine,

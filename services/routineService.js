@@ -1,15 +1,7 @@
 const routineRepository = require("../repositories/routineRepository");
 const userRepository = require("../repositories/userRepository");
 
-const { Exercise, SuperSet, Tag } = require("../model");
-
-const share = async (codeShare) => {
-  const routine = await routineRepository.findByCode(codeShare);
-  if (!routine) {
-    throw new Error("Routine not found");
-  }
-  return routine;
-};
+const { Exercise, SuperSet, Tag, Routine } = require("../model");
 
 const getRoutine = async (routineId) => {
   const routine = await routineRepository.findById(routineId);
@@ -59,7 +51,10 @@ const addRoutine = async (userId, routineId) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const routine = await routineRepository.findById(routineId);
+  const routine = await Routine.findByPk(routineId, {
+    include: [{ model: Tag, through: { attributes: [] } }],
+  });
+  console.log(routine);
   if (!routine) {
     throw new Error("Routine not found");
   }
@@ -163,7 +158,6 @@ const removeE = async (exerciseId, routineId) => {
 };
 
 module.exports = {
-  share,
   getRoutine,
   getData,
   createRoutine,

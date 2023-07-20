@@ -3,9 +3,6 @@ const routineController = require("../controllers/routineController");
 
 const router = Router();
 
-// GET code of share routine
-router.get("/shareRoutine/:codeShare", routineController.shareRoutine);
-
 // GET routines by ID
 router.get("/:routineId", routineController.getRoutineById);
 
