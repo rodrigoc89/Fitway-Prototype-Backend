@@ -24,10 +24,13 @@ router.get("/", async (req, res) => {
         {
           model: Exercise,
           through: { attributes: [] },
+        },
+        {
+          model: SuperSet,
+          through: { attributes: [] },
           include: [
             {
-              model: SuperSet,
-
+              model: Exercise,
               through: { attributes: [] },
             },
           ],
@@ -35,16 +38,21 @@ router.get("/", async (req, res) => {
       ],
     });
 
+    let allExercises = 0;
+    for (const routine of result) {
+      const exercises = await routine.getExercises();
+      allExercises += exercises.length;
+      const superSets = await routine.getSuperSets();
+      for (const superset of superSets) {
+        const exercise = await superset.getExercises();
+        allExercises += exercise.length;
+      }
+    }
+
     const resultWithExerciseCount = result.map((routine) => {
-      const exerciseCount =
-        routine.Exercises.length +
-        routine.Exercises.reduce(
-          (acc, exercise) => acc + exercise.SuperSets.length,
-          0
-        );
       return {
         ...routine.toJSON(),
-        exerciseCount,
+        exerciseCount: allExercises,
       };
     });
 
