@@ -25,7 +25,7 @@ const db = new Sequelize(
     host: dbConfig.db_host,
     dialect: dbConfig.db_dialect,
     logging: dbConfig.logging,
-    // port: dbConfig.db_port,
+    port: dbConfig.db_port,
     pool: dbConfig.pool,
   }
 );
