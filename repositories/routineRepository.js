@@ -1,17 +1,5 @@
 const { Routine, Tag, Exercise, SuperSet } = require("../model");
 
-const findByCode = async (codeShare) => {
-  return await Routine.findOne({
-    where: { public: true, codeShare: codeShare },
-    include: [
-      {
-        model: Tag,
-        through: { attributes: [] },
-      },
-    ],
-  });
-};
-
 const findById = async (routineId) => {
   return await Routine.findByPk(routineId);
 };
@@ -50,7 +38,6 @@ const eliminate = async (routineId) => {
 };
 
 module.exports = {
-  findByCode,
   findById,
   getData,
   create,
