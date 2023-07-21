@@ -23,6 +23,8 @@ router.get("/exercises/:userId", userController.getUserExercises);
 // GET super sets created by user
 router.get("/superSets/:userId", userController.getUserSuperSets);
 
+router.get("/logs/:userId", userController.getLogs);
+
 // PATCH edit user profile
 router.patch("/editProfile/:userId", userController.editUserProfile);
 
