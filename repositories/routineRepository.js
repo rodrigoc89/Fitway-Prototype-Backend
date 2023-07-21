@@ -1,7 +1,9 @@
 const { Routine, Tag, Exercise, SuperSet } = require("../model");
 
 const findById = async (routineId) => {
-  return await Routine.findByPk(routineId);
+  return await Routine.findByPk(routineId, {
+    include: [{ model: Tag, through: { attributes: [] } }],
+  });
 };
 
 const getData = async (routineId) => {

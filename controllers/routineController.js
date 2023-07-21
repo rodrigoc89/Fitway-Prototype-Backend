@@ -28,6 +28,20 @@ const getDataRoutine = async (req, res) => {
   }
 };
 
+const getLogRoutine = async (req, res) => {
+  const { routineId } = req.params;
+  try {
+    const logs = await routineService.getLog(routineId);
+    res.status(200).send(logs);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the data of logs routine",
+      details: error.message,
+    });
+  }
+};
+
 const newRoutine = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -57,6 +71,21 @@ const addRoutine = async (req, res) => {
     res.status(422).send({
       error: "Unprocessable Entity",
       message: "There was a problem adding the Routine",
+      details: error.message,
+    });
+  }
+};
+
+const createLog = async (req, res) => {
+  const { userId, routineId } = req.params;
+  try {
+    const { time, date } = req.body;
+    const log = await routineService.createLog(userId, routineId, time, date);
+    res.status(201).send(log);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem creating logs",
       details: error.message,
     });
   }
@@ -122,4 +151,6 @@ module.exports = {
   updateRoutine,
   deleteRoutine,
   removeExercise,
+  createLog,
+  getLogRoutine,
 };

@@ -138,6 +138,14 @@ const getSuperSets = async (userId) => {
   return superSets;
 };
 
+const getAllLogs = async (userId) => {
+  const logs = await userRepository.findLogs(userId);
+  if (!logs) {
+    throw new Error("logs not found");
+  }
+  return logs;
+};
+
 const editProfile = async (
   userId,
   country,
@@ -164,4 +172,5 @@ module.exports = {
   getExercises,
   getSuperSets,
   editProfile,
+  getAllLogs,
 };
