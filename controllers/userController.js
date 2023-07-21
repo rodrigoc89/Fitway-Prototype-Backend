@@ -122,6 +122,19 @@ const getUserExercises = async (req, res) => {
     });
   }
 };
+const getLogs = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const logs = await userService.getAllLogs(userId);
+    res.status(200).send(logs);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem finding the data of logs",
+      details: error.message,
+    });
+  }
+};
 
 const editUserProfile = async (req, res) => {
   const { userId } = req.params;
@@ -173,4 +186,5 @@ module.exports = {
   getUserExercises,
   getUserSuperSets,
   editUserProfile,
+  getLogs,
 };

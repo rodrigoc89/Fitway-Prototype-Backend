@@ -1,7 +1,7 @@
 const routineRepository = require("../repositories/routineRepository");
 const userRepository = require("../repositories/userRepository");
 
-const { Exercise, SuperSet, Tag, Routine } = require("../model");
+const { Exercise, SuperSet, Tag, Routine, Log } = require("../model");
 
 const getRoutine = async (routineId) => {
   const routine = await routineRepository.findById(routineId);
@@ -19,6 +19,19 @@ const getData = async (routineId) => {
     throw new Error("Routine not found");
   }
   return dataRoutine;
+};
+
+const getLog = async (routineId) => {
+  const log = await Routine.findByPk(routineId, {
+    include: [
+      {
+        model: Log,
+        through: { attributes: [] },
+      },
+    ],
+  });
+
+  return log;
 };
 
 const createRoutine = async (userId, name, selectDay, public) => {
@@ -43,6 +56,30 @@ const createRoutine = async (userId, name, selectDay, public) => {
   await user.addRoutine(newRoutine);
 
   return newRoutine;
+};
+
+const createLog = async (userId, routineId, time, date) => {
+  const user = await userRepository.findById(userId);
+  if (!user) {
+    throw new Error("user not found");
+  }
+  const routine = await routineRepository.findById(routineId);
+  if (!routine) {
+    throw new Error("Routine not found");
+  }
+
+  const muscles = routine.Tags.map((e) => e.tagName);
+
+  const log = await user.createLog({
+    time: time,
+    muscles: muscles,
+    day: routine.selectDay,
+    date: date,
+  });
+
+  await routine.addLog(log);
+
+  return log;
 };
 
 const addRoutine = async (userId, routineId) => {
@@ -165,4 +202,6 @@ module.exports = {
   update,
   deleted,
   removeE,
+  createLog,
+  getLog,
 };

@@ -1,4 +1,4 @@
-const { User, Exercise, SuperSet } = require("../model");
+const { User, Exercise, SuperSet, Log } = require("../model");
 const { Op } = require("sequelize");
 
 const findByEmailOrUsername = async (userLogin) => {
@@ -37,6 +37,10 @@ const findById = async (userId) => {
   return User.findByPk(userId);
 };
 
+const findLogs = async (userId) => {
+  return await Log.findByPk(userId);
+};
+
 const findExercises = async (userId) => {
   return Exercise.findAll({ where: { UserId: userId } });
 };
@@ -52,4 +56,5 @@ module.exports = {
   findById,
   findExercises,
   findSuperSets,
+  findLogs,
 };
