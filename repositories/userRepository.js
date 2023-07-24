@@ -1,4 +1,4 @@
-const { User, Exercise, SuperSet, Log } = require("../model");
+const { User, Exercise, SuperSet, Log, Routine } = require("../model");
 const { Op } = require("sequelize");
 
 const findByEmailOrUsername = async (userLogin) => {
@@ -41,6 +41,10 @@ const findLogs = async (userId) => {
   return await Log.findAll({
     where: {
       UserId: userId,
+    },
+    include: {
+      model: Routine,
+      through: { attributes: [] },
     },
   });
 };
