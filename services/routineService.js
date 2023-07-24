@@ -83,6 +83,21 @@ const createLog = async (userId, routineId, time, date) => {
 
   await routine.addLog(log);
 
+  const logWithRoutineInfo = {
+    id: log.id,
+    time: log.time,
+    muscles: log.muscles,
+    day: log.day,
+    date: log.date,
+    routine: {
+      id: routine.id,
+      name: routine.name,
+      selectDay: routine.selectDay,
+    },
+  };
+
+  return logWithRoutineInfo;
+
   return log;
 };
 
@@ -92,13 +107,15 @@ const addRoutine = async (userId, routineId) => {
   if (!user) {
     throw new Error("User not found");
   }
+
   const routine = await Routine.findByPk(routineId, {
     include: [{ model: Tag, through: { attributes: [] } }],
   });
-  console.log(routine);
+
   if (!routine) {
     throw new Error("Routine not found");
   }
+
   await user.addRoutine(routine);
 
   return routine;
