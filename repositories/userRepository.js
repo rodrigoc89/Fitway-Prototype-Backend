@@ -38,7 +38,11 @@ const findById = async (userId) => {
 };
 
 const findLogs = async (userId) => {
-  return await Log.findByPk(userId);
+  return await Log.findAll({
+    where: {
+      UserId: userId,
+    },
+  });
 };
 
 const findExercises = async (userId) => {
