@@ -14,7 +14,7 @@ Log.init(
     day: {
       type: Sequelize.STRING(),
     },
-    date: Sequelize.DATE(),
+    date: Sequelize.DATE,
   },
   {
     sequelize: db,
