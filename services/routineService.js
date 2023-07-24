@@ -31,6 +31,10 @@ const getLog = async (routineId) => {
     ],
   });
 
+  if (!log) {
+    throw new Error("log not found");
+  }
+
   return log;
 };
 
