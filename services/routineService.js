@@ -89,7 +89,7 @@ const createLog = async (userId, routineId, time, date) => {
     muscles: log.muscles,
     day: log.day,
     date: log.date,
-    routine: [
+    Routine: [
       {
         id: routine.id,
         name: routine.name,
