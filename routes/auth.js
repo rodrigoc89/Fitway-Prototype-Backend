@@ -1,7 +1,10 @@
 const Router = require("express");
 const { OAuth2Client } = require("google-auth-library");
 const { User } = require("../model");
+
 const { generateRandomPassword } = require("../config/auth");
+const { generateToken } = require("../config/token");
+
 require("dotenv").config();
 
 const router = Router();
@@ -45,7 +48,13 @@ router.post("/google/singIn", async (req, res) => {
         country: "none",
         username: name,
       });
-      return res.status(201).json({ message: "Successfully registered user" });
+      const payload = {
+        id: newUser.id,
+        email: newUser.email,
+        username: newUser.username,
+      };
+      const token = generateToken(payload);
+      return res.status(201).send(token);
     }
 
     res.status(200).json({ message: "login successful" });
