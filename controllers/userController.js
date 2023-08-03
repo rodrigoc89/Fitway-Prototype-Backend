@@ -122,6 +122,7 @@ const getUserExercises = async (req, res) => {
     });
   }
 };
+
 const getLogs = async (req, res) => {
   const { userId } = req.params;
   try {
