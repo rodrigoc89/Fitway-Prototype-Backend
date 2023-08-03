@@ -8,6 +8,7 @@ const requiredEnvs = [
   "DB_PASSWORD",
   "DB_HOST",
   "DB_DIALECT",
+  "GOOGLE_CLIENT_ID",
 ];
 
 requiredEnvs.forEach((env) => {

@@ -42,7 +42,7 @@ const register = async (
     birthdate,
     password,
     email,
-    country,
+    country, 
     username
   );
 
