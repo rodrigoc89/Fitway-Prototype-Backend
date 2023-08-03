@@ -49,9 +49,9 @@ router.post("/google/singIn", async (req, res) => {
         username: name,
       });
       const payload = {
-        id: newUser.id,
-        email: newUser.email,
-        username: newUser.username,
+        id: user.id,
+        email: user.email,
+        username: user.username,
       };
       const token = generateToken(payload);
       return res.status(201).send(token);
