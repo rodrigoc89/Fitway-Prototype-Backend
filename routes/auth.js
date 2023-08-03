@@ -15,7 +15,7 @@ const audience = [
 
 const client = new OAuth2Client(audience);
 
-router.post("/google/auth", async (req, res) => {
+router.post("/google/singIn", async (req, res) => {
   try {
     const { token } = req.body;
 
