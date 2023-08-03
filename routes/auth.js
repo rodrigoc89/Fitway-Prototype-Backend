@@ -48,16 +48,26 @@ router.post("/google/singIn", async (req, res) => {
         country: "none",
         username: name,
       });
-      const payload = {
+
+      const dataUser = {
         id: user.id,
         email: user.email,
         username: user.username,
       };
-      const token = generateToken(payload);
-      return res.status(201).send(token);
+
+      const tokenJWT = generateToken(dataUser);
+
+      return res.status(201).send(tokenJWT);
     }
 
-    res.status(200).json({ message: "login successful" });
+    const dataUser = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    };
+    const tokenJWT = generateToken(dataUser);
+
+    res.status(200).send(tokenJWT);
   } catch (error) {
     console.error(error);
 
