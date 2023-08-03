@@ -4,20 +4,29 @@ const { User } = require("../model");
 const { generateRandomPassword } = require("../config/auth");
 require("dotenv").config();
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const router = Router();
+
+const audience = [
+  process.env.ANDROID_GOOGLE_CLIENT_ID,
+  process.env.EXPO_GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI,
+];
+
+const client = new OAuth2Client(audience);
 
 router.post("/google/auth", async (req, res) => {
-  const { token } = req.body;
-
   try {
+    const { token } = req.body;
+
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: audience,
     });
 
     const payload = ticket.getPayload();
 
-    const { name, lastName, birthdate, email, country, username } = payload;
+    const { given_name, family_name, email, name } = payload;
 
     let user = await User.findOne({
       where: {
@@ -28,13 +37,13 @@ router.post("/google/auth", async (req, res) => {
     if (!user) {
       const password = await generateRandomPassword();
       user = await User.create({
-        name,
-        lastName,
-        birthdate,
-        password,
-        email,
-        country,
-        username,
+        name: given_name,
+        lastName: family_name,
+        birthdate: "2000-1-1",
+        password: password,
+        email: email,
+        country: "none",
+        username: name,
       });
       return res.status(201).json({ message: "Successfully registered user" });
     }
@@ -43,7 +52,6 @@ router.post("/google/auth", async (req, res) => {
   } catch (error) {
     console.error(error);
 
-    // Manejo de errores específicos (opcional)
     if (error.name === "GoogleAuthError") {
       return res.status(401).json({ error: "Google authentication erro" });
     }
@@ -56,21 +64,4 @@ router.post("/google/auth", async (req, res) => {
   }
 });
 
-router.post("/refresh-token", async (req, res) => {
-  const { refreshToken } = req.body;
-
-  try {
-    // Aquí puedes implementar la lógica para actualizar el token de acceso utilizando el refreshToken
-    // El refreshToken es proporcionado por Google y se usa para obtener un nuevo token de acceso cuando el actual expira
-
-    // Ejemplo:
-    // const newAccessToken = await tuFuncionParaActualizarAccessToken(refreshToken);
-
-    res.status(200).json({ accessToken: "NUEVO_ACCESS_TOKEN" }); // Devuelve el nuevo token de acceso actualizado
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al actualizar el token" });
-  }
-});
-
-const router = Router();
+module.exports = router;
