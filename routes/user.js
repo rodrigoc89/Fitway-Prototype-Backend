@@ -36,5 +36,6 @@ router.post("/register", passwordValidator, userController.register);
 
 //POST login user
 router.post("/login", userController.login);
+router.post("/addInfo/:userId", userController.info);
 
 module.exports = router;
