@@ -42,11 +42,11 @@ router.post("/google/singIn", async (req, res) => {
       user = await User.create({
         name: given_name,
         lastName: family_name,
-        birthdate: "2000-1-1",
+        birthdate: "none",
         password: password,
         email: email,
         country: "none",
-        username: name,
+        username: given_name + Math.floor(Math.random() * 1000),
       });
 
       const dataUser = {

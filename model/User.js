@@ -33,7 +33,15 @@ User.init(
         },
       },
     },
-
+    genre: {
+      type: Sequelize.STRING,
+    },
+    weight: {
+      type: Sequelize.DECIMAL,
+    },
+    heigh: {
+      type: Sequelize.DECIMAL,
+    },
     birthdate: {
       type: Sequelize.STRING,
       allowNull: false,

@@ -42,7 +42,7 @@ const register = async (
     birthdate,
     password,
     email,
-    country, 
+    country,
     username
   );
 
@@ -162,6 +162,16 @@ const editProfile = async (
   return user;
 };
 
+const addInfo = async (userId, genre, weight, heigh) => {
+  const user = await userRepository.findById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  await user.update({ genre, weight, heigh });
+
+  return user;
+};
+
 module.exports = {
   login,
   register,
@@ -173,4 +183,5 @@ module.exports = {
   getSuperSets,
   editProfile,
   getAllLogs,
+  addInfo,
 };

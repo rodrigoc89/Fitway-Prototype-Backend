@@ -177,6 +177,21 @@ const getUserSuperSets = async (req, res) => {
   }
 };
 
+const info = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const { genre, weight, heigh } = req.body;
+    const user = await userService.addInfo(userId, genre, weight, heigh);
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(422).send({
+      error: "Unprocessable Entity",
+      message: "There was a problem adding info",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   login,
   register,
@@ -188,4 +203,5 @@ module.exports = {
   getUserSuperSets,
   editUserProfile,
   getLogs,
+  info,
 };
