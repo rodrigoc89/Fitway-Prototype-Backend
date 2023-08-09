@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  fitwaydb:
+    image: postgres
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - ${PG_PORT}:${PG_PORT}
+
+  app:
+    build: .
+    depends_on:
+      - fitwaydb
+    links:
+      - fitwaydb
+    ports:
+      - 3000:3000
