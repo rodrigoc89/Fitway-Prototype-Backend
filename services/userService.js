@@ -88,6 +88,9 @@ const getData = async (token) => {
     country: user.country,
     email: user.email,
     username: user.username,
+    height: user.height,
+    weight: user.weight,
+    genre: user.genre,
   };
 };
 
@@ -162,12 +165,12 @@ const editProfile = async (
   return user;
 };
 
-const addInfo = async (userId, genre, weight, heigh) => {
+const addInfo = async (userId, genre, weight, height) => {
   const user = await userRepository.findById(userId);
   if (!user) {
     throw new Error("User not found");
   }
-  await user.update({ genre, weight, heigh });
+  await user.update({ genre, weight, height });
 
   return user;
 };

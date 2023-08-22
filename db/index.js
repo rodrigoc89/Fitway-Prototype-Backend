@@ -15,12 +15,6 @@ const dbConfig = {
     idle: 10000,
     acquire: 30000,
   },
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
 };
 
 const db = new Sequelize(
@@ -33,7 +27,6 @@ const db = new Sequelize(
     logging: dbConfig.logging,
     port: dbConfig.db_port,
     pool: dbConfig.pool,
-    dialectOptions: dbConfig.dialectOptions,
   }
 );
 

@@ -165,7 +165,7 @@ const getUserSuperSets = async (req, res) => {
   try {
     const superSets = await userService.getSuperSets(userId);
     if (superSets === []) {
-      return "no hay rutinas";
+      return "no found routines";
     }
     res.status(200).send(superSets);
   } catch (error) {
@@ -180,8 +180,8 @@ const getUserSuperSets = async (req, res) => {
 const info = async (req, res) => {
   const { userId } = req.params;
   try {
-    const { genre, weight, heigh } = req.body;
-    const user = await userService.addInfo(userId, genre, weight, heigh);
+    const { genre, weight, height } = req.body;
+    const user = await userService.addInfo(userId, genre, weight, height);
     res.status(200).send(user);
   } catch (error) {
     res.status(422).send({

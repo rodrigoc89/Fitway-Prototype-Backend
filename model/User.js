@@ -39,7 +39,7 @@ User.init(
     weight: {
       type: Sequelize.DECIMAL,
     },
-    heigh: {
+    height: {
       type: Sequelize.DECIMAL,
     },
     birthdate: {
